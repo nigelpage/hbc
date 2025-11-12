@@ -10,7 +10,8 @@
 }
 body {
   font-family: "Roboto", sans-serif;
-  background: linear-gradient(to bottom right, dodgerblue, white, lemonchiffon);
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, dodgerblue, white, rgb(247, 237, 105));
   margin: 5px;
 }
 
@@ -40,7 +41,7 @@ h1 {
 }
 
 .round {
-  color: aliceblue;
+  color: darkslategray;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -55,7 +56,7 @@ h1 {
   text-align: center;
   text-transform: uppercase;
   align-content: center;
-  background-color: dodgerblue;
+  background-color: rgba(30, 143, 255, 0.312);
   border: 2px solid lemonchiffon;
   border-radius: 30px;
   padding: 10px;
