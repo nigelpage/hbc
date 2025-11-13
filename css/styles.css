@@ -120,14 +120,13 @@ strong {
   text-transform: uppercase;
   color: darkslategray;
   border-radius: 30px;
-  padding: 1em 0.5em 0.5em;
   justify-content: center;
+  padding: 10px;
   margin: 10px;
 }
 
 .sideManager {
-  margin-top: 5px;
-  margin-bottom: 0;
+  margin: 10px;
 }
 
 .sideManager strong {
@@ -139,24 +138,27 @@ strong {
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
 .team {
   min-width: 250px;
   max-width: 250px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
   align-items: center;
   font-size: 1rem;
   text-transform: none;
   background-color: rgba(30, 143, 255, 0.312);
   border-radius: 30px;
-  margin: 20px;
 }
 
 .bowler {
-  display: flex;
-  flex-direction: column;
+  min-width: 200px;
+  max-width: 200px;
   display: block;
   width: 100%;
   background-color: whitesmoke;
@@ -164,8 +166,6 @@ strong {
   text-align: left;
   padding: 10px;
   margin: 5px;
-  min-width: 200px;
-  max-width: 200px;
 }
 
 .position {
