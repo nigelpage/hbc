@@ -30,6 +30,13 @@ strong {
   font-weight: bold;
 }
 
+.match {
+  border-radius: 30px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: darkblue;
+}
+
 .competition {
   color: rgb(40, 40, 40);
   display: flex;
