@@ -46,7 +46,7 @@ strong {
 }
 
 .competition p {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   text-transform: uppercase;
 }
 
@@ -115,7 +115,9 @@ strong {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  background-color: lightgray;
+  background-color: rgba(211, 211, 211, 0.5);
+  font-size: 1.4rem;
+  text-transform: uppercase;
   color: darkslategray;
   border-radius: 30px;
   padding: 1em 0.5em 0.5em;
@@ -124,10 +126,12 @@ strong {
 }
 
 .sideManager {
-  font-size: x-large;
-  font-weight: lighter;
   margin-top: 5px;
   margin-bottom: 0;
+}
+
+.sideManager strong {
+  text-transform: none;
 }
 
 .teams {
@@ -143,6 +147,7 @@ strong {
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: 1rem;
   text-transform: none;
   background-color: rgba(30, 143, 255, 0.312);
   border-radius: 30px;
@@ -165,10 +170,11 @@ strong {
 
 .position {
   font-weight: lighter;
-  font-size: smaller;
+  font-size: 0.8rem;
   text-transform: uppercase;
 }
 
 .name {
+  font-size: 1rem;
   font-weight: bold;
 }
