@@ -138,7 +138,7 @@ strong {
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
 }
 
 .team {
@@ -148,7 +148,7 @@ strong {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
   align-items: center;
   font-size: 1rem;
   text-transform: none;
