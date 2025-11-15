@@ -32,10 +32,6 @@ strong {
 
 .match {
   border-radius: 30px;
-  border-width: 2px;
-  /* border-style: solid;
-  border-color: darkblue;
-  margin: 10px; */
 }
 
 .competition {
@@ -79,8 +75,8 @@ strong {
   text-align: center;
   text-transform: uppercase;
   align-content: center;
-  background-color: rgba(30, 143, 255, 0.312);
-  border: 2px solid lemonchiffon;
+  background-color: rgba(30, 143, 255, 0.1);
+  border: 1px solid black;
   border-radius: 30px;
   padding: 10px;
 }

@@ -4,7 +4,6 @@
     "name": "Will McKay",
     "phone": "0417 333 349"
   },
-  "updated": "20251113T15:41",
   "round": {
     "number": 3,
     "playedAt": "20251108T12:30",
@@ -12,6 +11,7 @@
     "opponent": "Glenroy 1"
   },
   "side": {
+    "updated": "20251113T15:41",
     "name": "Heathmont 1",
     "manager": "Craig Bryant",
     "teams": [
