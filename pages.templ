@@ -18,13 +18,13 @@ templ baseLayout(formatMatches templ.Component) {
 </html>
 }
 
-templ generateMatches(matches MatchStore) {
-    for _, m := range matches.Matches {
+templ generateMatches(matchStore MatchStore) {
+    for _, m := range matchStore.Matches {
         <section class="match">
         <section class="competition">
           <p class="highlightSide">{ m.Side.Name }</p>
           <div class="verticalRule"></div>
-          <p>{ m.Competition }</p>
+          <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
           <div class="verticalRule"></div>
           <p>Round { m.Round.Number }</p>
           <div class="verticalRule"></div>
@@ -58,19 +58,42 @@ templ generateMatches(matches MatchStore) {
         </section>
 
         <section class="side">
-          <p class="sideManager">Side Manager: <strong>{ m.Side.Manager }</strong></p>
+          <div class="sideHeader">
+            if hasResults(m.Side.Teams) {
+              <div class="sideResult" { getSideWinDrawLoss(m.Side.Teams) }>
+                <p>{ calculateSidePointsFor(m.Side.Teams) }</p> 
+                <p>:</p>
+                <p>{ calculateSidePointsAgainst(m.Side.Teams) }</p>
+                <p class="sidePoints"> - </p>
+                <p class="sidePoints">{ calculateSidePoints(m.Side.Teams) } points</p>
+              </div>
+            } else {
+              <p></p>
+            }
+            <p class="sideManager">
+              Side Manager: <strong>{ m.Side.Manager }</strong>
+            </p>
+          </div>
 
           <div class="teams">
-            for _, team := range m.Side.Teams {
+            for _, t := range m.Side.Teams {
             <div class="team">
-              <p class="duty">{ team.Duty }</p>
-                for _, bowler := range team.Bowlers {
+              <p class="duty">{ t.Duty }</p>
+                for _, b := range t.Bowlers {
                   <div class="bowler">
-                    <p class="position">{ bowler.Position }</p>
-                    <p class="role">{ bowler.Role }</p>
-                    <p class="name">{ bowler.Name }</p>
+                    <p class="position">{ b.Position }</p>
+                    <p class="role">{ b.Role }</p>
+                    <p class="name">{ b.Name }</p>
                   </div>
                 }
+                if hasResults(m.Side.Teams) {
+                  <div class="result" { getTeamWinDrawLoss(t) }>
+                    <p> { t.Shots.For }</p>
+                    <p>:</p>
+                    <p>{ t.Shots.Against }</p>
+                  </div>
+                }
+
             </div>
            }
           </div>

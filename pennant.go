@@ -10,9 +10,13 @@ import (
 	"strings"
 	"time"
 )
+
 type MatchStore struct {
 	Matches []struct {
-		Competition  string `json:"competition"`
+		Competition struct {
+			Name        string `json:"name"`
+			BowlslinkID string `json:"bowlslinkId"`
+		} `json:"competition"`
 		DutySelector struct {
 			Name  string `json:"name"`
 			Phone string `json:"phone"`
@@ -27,23 +31,60 @@ type MatchStore struct {
 			Updated string `json:"updated"`
 			Name    string `json:"name"`
 			Manager string `json:"manager"`
-			Teams   []struct {
-				Duty string `json:"duty"`
+			Teams []struct {
+				Duty string `json:"duty,omitempty"`
 				Bowlers []struct {
 					Position string `json:"position"`
 					Name     string `json:"name"`
 					Role     string `json:"role"`
 				} `json:"team"`
+				Shots struct {
+					For     int `json:"for"`
+					Against int `json:"against"`
+				} `json:"shots"`
 			} `json:"teams"`
 		} `json:"side"`
 	} `json:"matches"`
 }
+
+type Teams []struct {
+	Duty string `json:"duty,omitempty"`
+	Bowlers []struct {
+		Position string `json:"position"`
+		Name     string `json:"name"`
+		Role     string `json:"role"`
+	} `json:"team"`
+    Shots struct {
+        For     int `json:"for"`
+        Against int `json:"against"`
+    } `json:"shots"`
+}
+
+type Team struct {
+	Duty string `json:"duty,omitempty"`
+	Bowlers []struct {
+		Position string `json:"position"`
+		Name     string `json:"name"`
+		Role     string `json:"role"`
+	} `json:"team"`
+    Shots struct {
+        For     int `json:"for"`
+        Against int `json:"against"`
+    } `json:"shots"`
+}
+
+// type Teams []Team
 
 const (
   timeStoreFormat = "2006-01-02T15:04"
   timeDisplayFormat = "Monday 02 January 2006 03:04PM"
   timeDisplayFormatShort = "02 Jan 03:04PM"
 )
+
+func formatBowlslinkURI(bowlslinkId string) string {
+	bowlslinkURI :=  fmt.Sprintf("href=https://results.bowlslink.com.au/competition/%s#ladder", bowlslinkId)
+	return bowlslinkURI
+}
 
 func formatPhoneNumberURI(phoneNumber string) string {
 	trimmed := strings.Join(strings.Fields(strings.TrimSpace(phoneNumber)), "")
@@ -62,6 +103,98 @@ func formatTime(timeStr string, shortTimeDisplay bool) string {
 	}
 
 	return t.Format(timeDisplayFormat)
+}
+
+func hasResults(teams Teams) bool {
+	if calculateSidePointsFor(teams) > 0 || calculateSidePointsAgainst(teams) > 0 {
+		return true
+	}
+	
+	return false
+}
+
+func calculateSidePointsFor(teams Teams) int {
+	totalFor := 0
+	
+	for _, team := range teams {
+		totalFor += team.Shots.For
+		}
+
+	return totalFor
+}
+
+func calculateSidePointsAgainst(teams Teams) int {
+	totalAgainst := 0
+	
+	for _, team := range teams {
+		totalAgainst += team.Shots.Against
+		}
+
+	return totalAgainst
+}
+
+func calculateSidePoints(teams Teams) int {
+	teamWins := 0
+	teamLosses := 0
+	teamDraws := 0
+	totalPointsFor := 0
+	totalPointsAgainst := 0
+	points := 0
+
+	for _, team := range teams {
+		pointsFor := team.Shots.For
+		pointsAgainst := team.Shots.Against
+
+		totalPointsFor += pointsFor
+		totalPointsAgainst += pointsAgainst
+
+		if pointsFor > pointsAgainst {
+			teamWins++
+		} else if pointsFor < pointsAgainst {
+			teamLosses++
+		} else {
+			teamDraws++
+		}
+	}
+
+	points = (teamWins * 2) + teamDraws
+	if totalPointsFor > totalPointsAgainst {
+		points += 10
+	} else if totalPointsFor == totalPointsAgainst {
+		points +=5
+	}
+
+	return points
+}
+
+func getSideWinDrawLoss(teams Teams) string {
+	totalPointsFor := calculateSidePointsFor(teams)
+	totalPointsAgainst := calculateSidePointsAgainst(teams)
+	data := ""
+
+	if totalPointsFor > totalPointsAgainst {
+		data = "up"
+	} else if totalPointsFor < totalPointsAgainst {
+		data = "down"
+	} else {
+		data = "draw"
+	}
+
+	return "data-SideWinDrawLoss=" + data
+}
+
+func getTeamWinDrawLoss(team Team) string {
+data := ""
+
+	if team.Shots.For > team.Shots.Against {
+		data = "up"
+	} else if team.Shots.For < team.Shots.Against {
+		data = "down"
+	} else {
+		data = "draw"
+	}
+
+	return "data-teamWinDrawLoss=" + data
 }
 
 func getStoredMatches()	MatchStore {

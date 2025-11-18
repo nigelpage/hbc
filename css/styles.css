@@ -8,15 +8,20 @@
   padding: 0;
   box-sizing: border-box;
 }
-body {
-  font-family: "Roboto", sans-serif;
-  min-height: 100vh;
+
+html {
+  min-height: 100%;
   background: linear-gradient(
     to bottom right,
     dodgerblue,
     white,
     rgb(247, 237, 105)
   );
+  background-attachment: fixed;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
   margin: 5px;
 }
 
@@ -39,15 +44,22 @@ strong {
 
 .competition {
   color: rgb(40, 40, 40);
+  font-size: 1.4rem;
+  text-transform: uppercase;
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin: 1rem;
 }
 
-.competition p {
-  font-size: 1.4rem;
-  text-transform: uppercase;
+.competition a {
+  color: currentColor;
+  text-decoration: underline;
+}
+
+.competition a:hover {
+  color: black;
+  text-decoration: none;
 }
 
 .highlightSide {
@@ -121,17 +133,53 @@ strong {
   color: darkslategray;
   box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
   border-radius: 30px;
-  justify-content: center;
   padding: 10px;
   margin: 10px;
 }
 
-.sideManager {
+.sideHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   margin-bottom: 10px;
+}
+
+.sideResult {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 5px;
+  min-width: 250px;
+  max-width: 250px;
+  padding: 10px;
+  border-radius: 30px;
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+}
+
+.sidePoints {
+  font-weight: normal;
+  text-transform: lowercase;
+}
+
+.sideManager {
+  margin: auto;
+  padding: 10px;
 }
 
 .sideManager strong {
   text-transform: none;
+}
+
+.sideResult[data-sideWinDrawLoss="up"] {
+  background-color: rgba(0, 128, 0, 0.15);
+}
+
+.sideResult[data-sideWinDrawLoss="down"] {
+  background-color: rgba(255, 0, 0, 0.15);
+}
+
+.sideResult[data-sideWinDrawLoss="draw"] {
+  background-color: rgba(255, 166, 0, 0.15);
 }
 
 .teams {
@@ -155,7 +203,7 @@ strong {
   text-transform: none;
   background-color: rgba(30, 143, 255, 0.312);
   box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
-border-radius: 30px;
+  border-radius: 30px;
 }
 
 .duty {
@@ -166,8 +214,8 @@ border-radius: 30px;
 }
 
 .bowler {
-  min-width: 200px;
-  max-width: 200px;
+  min-width: 220px;
+  max-width: 220px;
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: auto;
@@ -198,4 +246,30 @@ border-radius: 30px;
   grid-column: span 2;
   font-size: 1rem;
   font-weight: bold;
+}
+
+.result {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  min-width: 100px;
+  max-width: 100px;
+  padding: 10px;
+  border-radius: 30px;
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
+}
+
+.result[data-teamWinDrawLoss="up"] {
+  background-color: rgba(0, 128, 0, 0.15);
+}
+
+.result[data-teamWinDrawLoss="down"] {
+  background-color: rgba(255, 0, 0, 0.15);
+}
+
+.result[data-teamWinDrawLoss="draw"] {
+  background-color: rgba(255, 166, 0, 0.15);
 }
