@@ -21,9 +21,7 @@ templ baseLayout(formatMatches templ.Component) {
 templ generateMatches(matchStore MatchStore) {
     for _, m := range matchStore.Matches {
         <section class="match">
-        <section class="competition">
-          <p class="highlightSide">{ m.Side.Name }</p>
-          <div class="verticalRule"></div>
+          <section class="competition">
           <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
           <div class="verticalRule"></div>
           <p>Round { m.Round.Number }</p>
@@ -58,26 +56,34 @@ templ generateMatches(matchStore MatchStore) {
         </section>
 
         <section class="side">
-          <div class="sideHeader">
+          <section class="sideHeader">
             if hasResults(m.Side.Teams) {
-              <div class="sideResult" { getSideWinDrawLoss(m.Side.Teams) }>
+              <article class="sideResult" { getSideWinDrawLoss(m.Side.Teams) }>
                 <p>{ calculateSidePointsFor(m.Side.Teams) }</p> 
                 <p>:</p>
                 <p>{ calculateSidePointsAgainst(m.Side.Teams) }</p>
                 <p class="sidePoints"> - </p>
                 <p class="sidePoints">{ calculateSidePoints(m.Side.Teams) } points</p>
-              </div>
+              </article>
             } else {
-              <p></p>
+              <article></article>
             }
-            <p class="sideManager">
-              Side Manager: <strong>{ m.Side.Manager }</strong>
-            </p>
-          </div>
+            <article class="sideName">{ m.Side.Name }</article>
 
-          <div class="teams">
+            <article class="sideHeaderTile">
+              <p class="sideHeaderTileTitle">{ m.Round.PlayedOn.Title }</p>
+              <p class="sideHeaderTileDetails">{ m.Round.PlayedOn.Details }</p>
+            </article>
+
+            <article class="sideHeaderTile">
+              <p class="sideHeaderTileTitle">Side Manager</p>
+              <p class="sideHeaderTileDetails">{ m.Side.Manager }</p>
+            </article>
+          </section>
+
+          <section class="teams">
             for _, t := range m.Side.Teams {
-            <div class="team">
+            <article class="team">
               <p class="duty">{ t.Duty }</p>
                 for _, b := range t.Bowlers {
                   <div class="bowler">
@@ -94,9 +100,9 @@ templ generateMatches(matchStore MatchStore) {
                   </div>
                 }
 
-            </div>
+              </article>
            }
-          </div>
+          </section>
         </section>
       </section>
   }

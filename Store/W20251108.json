@@ -12,6 +12,10 @@
       "round": {
         "number": 3,
         "playedAt": "2025-11-15T12:30",
+        "playedOn": {
+          "title": "Rinks",
+          "details": "12 : 15"
+        },
         "venue": "Heathmont",
         "opponent": "Clayton 1"
       },
@@ -148,6 +152,11 @@
       "round": {
         "number": 3,
         "playedAt": "2025-11-15T12:30",
+        "playedOn": {
+          "title": "Rinks",
+          "details": "18 : 21"
+        },
+
         "venue": "Heathmont",
         "opponent": "Mooroolbark 1"
       },
@@ -285,6 +294,10 @@
       "round": {
         "number": 3,
         "playedAt": "2025-11-15T12:30",
+        "playedOn": {
+          "title": "Surface",
+          "details": "Grass"
+        },
         "venue": "Mooroolbark",
         "opponent": "Mooroolbark 2"
       },
@@ -421,6 +434,10 @@
       "round": {
         "number": 3,
         "playedAt": "2025-11-15T12:30",
+        "playedOn": {
+          "title": "Rinks",
+          "details": "2 : 5"
+        },
         "venue": "Heathmont",
         "opponent": "Mooroolbark 3"
       },
@@ -558,6 +575,10 @@
       "round": {
         "number": 3,
         "playedAt": "2025-11-15T12:30",
+        "playedOn": {
+          "title": "Surface",
+          "details": "Synthetic"
+        },
         "venue": "Mooroolbark",
         "opponent": "Mooroolbark 4"
       },
@@ -694,6 +715,10 @@
       "round": {
         "number": 3,
         "playedAt": "2025-11-15T12:30",
+        "playedOn": {
+          "title": "Rinks",
+          "details": "6 : 9"
+        },
         "venue": "Heathmont",
         "opponent": "Heatherdale 2"
       },

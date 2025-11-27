@@ -6,9 +6,9 @@
 :root {
   --radius: 30px;
   --shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
-  --winColor: rgba(0, 128, 0, 0.45);
-  --lossColor: rgba(255, 0, 0, 0.45);
-  --drawColor: rgba(255, 166, 0, 0.45);
+  --winColor: rgba(0, 128, 0, 0.15);
+  --lossColor: rgba(255, 0, 0, 0.15);
+  --drawColor: rgba(255, 166, 0, 0.15);
   --gridGap: 1rem;
   --teamWidth: 250px;
 }
@@ -36,7 +36,13 @@ body {
 }
 
 main {
-  color: rgb(40, 40, 40);
+  pointer-events: auto;
+}
+
+a:hover {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 h1 {
@@ -64,6 +70,11 @@ strong {
   flex-direction: row;
   justify-content: center;
   margin: 1rem;
+}
+
+.competition a {
+  color: currentColor;
+  text-decoration: underline;
 }
 
 .verticalRule {
@@ -94,6 +105,12 @@ strong {
   padding: 10px;
 }
 
+.round a {
+  color: currentColor;
+  text-decoration: underline;
+  pointer-events: auto;
+}
+
 .round img {
   display: inline-block;
   vertical-align: middle;
@@ -110,19 +127,9 @@ strong {
   display: inline-block;
 }
 
-.liveLink {
-  color: rgb(40, 40, 40);
-  text-decoration: underline;
-  /* pointer-events: auto; */
-}
-
-.liveLink:hover {
-  color: rgb(40, 40, 40);
-  text-decoration: none;
-}
-
 .side {
   display: grid;
+  grid-template-columns: repeat(4 1fr);
   gap: var(--gridGap);
   margin-bottom: 1.25rem;
   justify-content: center;
@@ -191,12 +198,12 @@ strong {
 
 .sideHeaderTileTitle {
   font-weight: lighter;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
 }
 
 .sideHeaderTileDetails {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
   text-transform: none;
   color: black;
@@ -220,7 +227,7 @@ strong {
   flex-direction: row;
   flex-wrap: wrap;
   font-size: 1rem;
-  font-weight: bold;
+  font-style: bold;
 }
 
 .teams {

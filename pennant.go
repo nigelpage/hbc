@@ -24,6 +24,10 @@ type MatchStore struct {
 		Round struct {
 			Number   int    `json:"number"`
 			PlayedAt string `json:"playedAt"`
+			PlayedOn struct {
+				Title string `json:"title"`
+				Details string `json:"details"`
+			} `json:"playedOn"`
 			Venue    string `json:"venue"`
 			Opponent string `json:"opponent"`
 		} `json:"round"`
@@ -180,7 +184,7 @@ func getSideWinDrawLoss(teams Teams) string {
 		data = "draw"
 	}
 
-	return "data-SideWinDrawLoss=" + data
+	return "data-SideResult=" + data
 }
 
 func getTeamWinDrawLoss(team Team) string {
@@ -194,7 +198,7 @@ data := ""
 		data = "draw"
 	}
 
-	return "data-teamWinDrawLoss=" + data
+	return "data-teamResult=" + data
 }
 
 func getStoredMatches()	MatchStore {
