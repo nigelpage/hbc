@@ -110,16 +110,35 @@ strong {
   display: inline-block;
 }
 
-.liveLink {
+a:link {
+  color: currentColor;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: currentColor;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: currentColor;
+  text-decoration: none;
+}
+
+a:active {
+  color: currentColor;
+  text-decoration: underline;
+}
+
+/* .liveLink:link .liveLink:visited {
   color: rgb(40, 40, 40);
   text-decoration: underline;
-  /* pointer-events: auto; */
 }
 
 .liveLink:hover {
   color: rgb(40, 40, 40);
   text-decoration: none;
-}
+} */
 
 .side {
   display: grid;
