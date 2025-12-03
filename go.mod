@@ -1,6 +1,6 @@
 module github.com/nigelpage/pennant
 
-go 1.24.6
+go 1.25.5
 
 tool github.com/a-h/templ/cmd/templ
 

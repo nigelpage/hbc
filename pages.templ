@@ -9,8 +9,21 @@ templ baseLayout(formatMatches templ.Component) {
     <title>Pennant</title>
     <link rel="stylesheet" href="/static/css/styles.css">
   </head>
+
   <body>
-    <h1>Weekend Pennant</h1>
+    <h1>*Unused*</h1>
+    <section id="competitionType">
+      <div class="dropdown">
+        <button class="dropbtn">Weekend Pennant</button>
+        <div class="dropdown-content">
+          <a href="#">Weekend Pennant</a>
+          <a href="#">Midweek Pennant</a>
+          <a href="#">Night Pennant</a>
+        </div>
+      </div>
+
+      <img id="locked" src="/img/lock-closed-sharp.svg"></img>
+    </section>
     <main>
       @formatMatches
     </main>
@@ -26,6 +39,7 @@ templ generateMatches(matchStore MatchStore) {
           <div class="verticalRule"></div>
           <p>Round { m.Round.Number }</p>
           <div class="verticalRule"></div>
+          <img src="/img/lock-closed-sharp.svg"></img>
           <p>
             <time datetime="{ m.Round.PlayedAt }">{ formatTime(m.Round.PlayedAt, false) }</time>
           </p>

@@ -223,6 +223,9 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 	baseLayout(generatedMatches).Render(context.Background(), w)
 }
 
+func competitionHandler(w http.ResponseWriter, r *http.Request) {
+}
+
 func main() {
 	/* Setup a handler for static files (e.g. CSS, JS etc...) */
 	fs := http.FileServer(http.Dir("./"))
@@ -230,6 +233,7 @@ func main() {
 
 	/* Setup main handler */
 	http.HandleFunc("/", mainHandler)
+	http.HandleFunc("/competitions", competitionHandler)
 
 	/* Start HTTP server */
 	fmt.Println("Starting server on :8080")

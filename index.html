@@ -4,17 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pennant</title>
+    <script src="/htmx/htmx.min.js"></script>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <main>
-      <h1>
-        <!--
-        **TODO insert buttons for HTMX to swap out sides for weekend, midweek and night pennant sides**
-        N.B. All code below requires templating and extracting for use by HTMX
-        -->
-        Weekend Pennant Sides
-      </h1>
+      <h1 id="mainHeading"></h1>
+      <div class="dropdown">
+        <button class="dropbtn">Weekend Pennant</button>
+        <div class="dropdown-content">
+          <a href="#">Weekend Pennant</a>
+          <a href="#">Midweek Pennant</a>
+          <a href="#">Night Pennant</a>
+        </div>
+      </div>
 
       <section class="match">
         <section class="competition">
