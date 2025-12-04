@@ -48,16 +48,17 @@ strong {
   font-weight: bold;
 }
 
-#competitionType {
+#pageHeader {
   display: flex;
-  align-items: stretch;
-  justify-content: center;
+  width: 100%;
+  align-items: center;
+  vertical-align: center;
 }
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
-  position: relative;
-
+  margin-right: auto;
+  margin-left: auto;
   display: inline-block;
   color: darkslategray;
   font-size: 2rem;
@@ -77,7 +78,7 @@ strong {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: rgb(247, 238, 105);
+  background-color: rgb(249, 243, 163);
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -92,7 +93,7 @@ strong {
 
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {
-  background-color: rgba(247, 238, 105);
+  background-color: rgba(247, 237, 105);
 }
 
 /* Show the dropdown menu on hover */
@@ -107,9 +108,8 @@ strong {
   text-decoration: none;
 }
 
-#locked {
-  position: relative;
-  justify-content: right;
+#lockedUnlockedIcon {
+  margin-right: 1.5rem;
 }
 
 .match {
