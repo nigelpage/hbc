@@ -108,8 +108,17 @@ strong {
   text-decoration: none;
 }
 
+#lockedUnlocked {
+  margin-right: 2rem;
+}
+
 #lockedUnlockedIcon {
-  margin-right: 1.5rem;
+  width: 1.5rem;
+}
+
+#lockUnlock {
+  all: unset;
+  cursor: pointer;
 }
 
 .match {
