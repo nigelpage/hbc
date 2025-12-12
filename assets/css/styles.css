@@ -108,8 +108,16 @@ strong {
   text-decoration: none;
 }
 
-#lockedUnlocked {
-  margin-right: 2rem;
+#lockUnlockContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#editContainer {
+  width: 20%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 15px;
 }
 
 #lockedUnlockedIcon {
@@ -119,6 +127,37 @@ strong {
 #lockUnlock {
   all: unset;
   cursor: pointer;
+  display: inline-block;
+  anchor-name: --lockUnlockAnchor;
+}
+
+#authenticate {
+  border-color: rgba(40, 40, 40, 0.25);
+  border-radius: 15px;
+  box-shadow: 0 0 5px 1px rgba(40, 40, 40, 0.2);
+  background: rgba(211, 211, 211);
+  padding: 10px;
+  min-width: 200px;
+  max-width: 200px;
+  min-height: 3rem;
+  position: absolute;
+  position-anchor: --lockUnlockAnchor;
+  position-area: end span-start;
+}
+
+#passwordInput {
+  width: 100%;
+}
+
+#authenticate button {
+  width: 70px;
+  margin-top: 5px;
+}
+
+.editButtons button {
+  width: 45%;
+  margin: 5px;
+  display: none;
 }
 
 .match {

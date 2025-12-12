@@ -280,6 +280,5 @@ func main() {
 	app.GET("/:competition", competitionHandler)
 
 	/* Start HTTP server */
-	fmt.Println("Starting server on :8080")
 	app.Logger.Fatal(app.Start(":4000"))
 }
