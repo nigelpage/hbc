@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +8,9 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/a-h/templ"
+	"github.com/labstack/echo/v4"
 )
 
 type MatchStore struct {
@@ -222,9 +224,10 @@ data := ""
 	return "data-teamResult=" + data
 }
 
-func getStoredMatches()	MatchStore {
+func getStoredMatches(comp string) MatchStore {
 	// Placeholder function to simulate fetching stored matches
-	jsonFile, err := os.Open("Store/W20251108.json")
+	pennantCompetitionStore := fmt.Sprintf("Store/%s20251108.json", string(comp[0]))
+	jsonFile, err := os.Open(pennantCompetitionStore)
 	if err != nil {
 		fmt.Println("Error opening JSON file:", err)
 		return MatchStore{}
@@ -239,26 +242,44 @@ func getStoredMatches()	MatchStore {
 	return matchStore
 }
 
-func mainHandler(w http.ResponseWriter, r *http.Request) {
-	generatedMatches := generateMatches(getStoredMatches(), templateConstants)
-	baseLayout(generatedMatches, templateConstants).Render(context.Background(), w)
+func createMainPageFromTemplate(competition string) templ.Component {
+	store := getStoredMatches(competition)
+	generatedMatches := generateMatches(store, templateConstants)
+	return baseLayout(generatedMatches, templateConstants)
 }
 
-func competitionHandler(w http.ResponseWriter, r *http.Request) {
+/* Main Pennant page handler */
+func weekendCompetitionHandler(ctx echo.Context) error {
+	return mainPageRenderer(ctx, http.StatusOK, createMainPageFromTemplate("Weekend"))
+}
+
+func competitionHandler(ctx echo.Context) error {
+	comp := ctx.Param("competition")
+	return mainPageRenderer(ctx, http.StatusOK, createMainPageFromTemplate(comp))
+}
+
+/* Main page renderer */
+func mainPageRenderer(ctx echo.Context, statusCode int, cmp templ.Component) error {
+	buf := templ.GetBuffer()
+	defer templ.ReleaseBuffer(buf)
+	
+	if err := cmp.Render(ctx.Request().Context(), buf); err != nil {
+		return err
+	}
+
+	return ctx.HTML(statusCode, buf.String())
 }
 
 func main() {
+	app := echo.New()
 	/* Setup a handler for static files (e.g. CSS, JS etc...) */
-	fs := http.FileServer(http.Dir("./"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
+	app.Static("/static", "./assets")
+	
 	/* Setup main handler */
-	http.HandleFunc("/", mainHandler)
-	http.HandleFunc("/competitions", competitionHandler)
+	app.GET("/", weekendCompetitionHandler)
+	app.GET("/:competition", competitionHandler)
 
 	/* Start HTTP server */
 	fmt.Println("Starting server on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		fmt.Println("Server failed:", err)
-	}
+	app.Logger.Fatal(app.Start(":4000"))
 }
