@@ -131,18 +131,25 @@ strong {
   anchor-name: --lockUnlockAnchor;
 }
 
+#authenticateBackdrop {
+  background: rgb(55 55 55 / 90%);
+}
+
 #authenticate {
-  border-color: rgba(40, 40, 40, 0.25);
+  position: absolute;
+  position-anchor: --lockUnlockAnchor;
+  position-area: end span-start;
+  z-index: 1000;
+  border-color: rgb(40 40 40 / 25%);
   border-radius: 15px;
   box-shadow: 0 0 5px 1px rgba(40, 40, 40, 0.2);
-  background: rgba(211, 211, 211);
   padding: 10px;
   min-width: 200px;
   max-width: 200px;
   min-height: 3rem;
-  position: absolute;
-  position-anchor: --lockUnlockAnchor;
-  position-area: end span-start;
+  background-color: rgba(211, 211, 211, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 #passwordInput {

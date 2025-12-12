@@ -38,14 +38,16 @@ templ baseLayout(formatMatches templ.Component, templateConstants *TemplateConst
           </button>
         </div>
 
-        <dialog id="authenticate">
-          <p>Password:</p>
-            <input type="password" id="passwordInput" />
-            <div id="authenticateOkCancel">
-              <button id="passwordAccept">OK</button>
-              <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
-            </div>
-        </dialog>
+        <div id="authenticateBackdrop">
+          <dialog id="authenticate">
+            <p>Password:</p>
+              <input type="password" id="passwordInput" />
+              <div id="authenticateOkCancel">
+                <button id="passwordAccept">OK</button>
+                <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
+              </div>
+          </dialog>
+        </div>
 
       </div>
     </section>
