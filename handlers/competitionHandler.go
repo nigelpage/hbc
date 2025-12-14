@@ -40,22 +40,10 @@ func createMainPageFromTemplate(competition string) templ.Component {
 
 /* Main Pennant page handler */
 func WeekendCompetitionHandler(ctx echo.Context) error {
-	return mainPageRenderer(ctx, http.StatusOK, createMainPageFromTemplate("Weekend"))
+	return templateRenderer(ctx, http.StatusOK, createMainPageFromTemplate("Weekend"))
 }
 
 func CompetitionHandler(ctx echo.Context) error {
 	comp := ctx.Param("competition")
-	return mainPageRenderer(ctx, http.StatusOK, createMainPageFromTemplate(comp))
-}
-
-/* Main page renderer */
-func mainPageRenderer(ctx echo.Context, statusCode int, cmp templ.Component) error {
-	buf := templ.GetBuffer()
-	defer templ.ReleaseBuffer(buf)
-	
-	if err := cmp.Render(ctx.Request().Context(), buf); err != nil {
-		return err
-	}
-
-	return ctx.HTML(statusCode, buf.String())
+	return templateRenderer(ctx, http.StatusOK, createMainPageFromTemplate(comp))
 }

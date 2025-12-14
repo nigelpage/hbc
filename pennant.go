@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/pennant/handlers"
@@ -12,10 +10,10 @@ type Password struct {
 	Hash string `json:"password"`
 }
 
-func checkHash(password Password) bool {
-	fmt.Printf("Password hash: %s/n", password.Hash)
-	return true;
-}
+// func checkHash(password Password) bool {
+// 	fmt.Printf("Password hash: %s/n", password.Hash)
+// 	return true;
+// }
 
 // func authenticationHandler(ctx echo.Context) error {
 // // Source - https://stackoverflow.com/a
@@ -51,7 +49,7 @@ func main() {
 	/* Setup main handler */
 	app.GET("/", handlers.WeekendCompetitionHandler)
 	app.GET("/:competition", handlers.CompetitionHandler)
-	// app.POST("/authenticate", authenticationHandler)
+	app.POST("/authenticate", handlers.AuthenticationHandler)
 
 	/* Start HTTP server */
 	app.Logger.Fatal(app.Start(":4000"))
