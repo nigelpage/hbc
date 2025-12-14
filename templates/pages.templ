@@ -1,8 +1,11 @@
-package main
+package templates
 
-import ( "strings" )
+import (
+  "strings"
+	"github.com/nigelpage/pennant/store"
+)
 
-templ baseLayout(formatMatches templ.Component, templateConstants *TemplateConstants) {
+templ BaseLayout(formatMatches templ.Component, icons TemplateIcons) {
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -27,29 +30,7 @@ templ baseLayout(formatMatches templ.Component, templateConstants *TemplateConst
         </div>
       </div>
 
-      <div id="lockUnlockContainer">
-        <div id="editContainer">
-          <div class="editButtons">
-            <button class="editButtons">New Round</button>
-            <button class="editButtons">Add Side</button>
-          </div>
-          <button id="lockUnlock" onclick="showLogin()">
-            @templ.Raw(templateConstants.LockedIcon)
-          </button>
-        </div>
-
-        <div id="authenticateBackdrop">
-          <dialog id="authenticate">
-            <p>Password:</p>
-              <input type="password" id="passwordInput" />
-              <div id="authenticateOkCancel">
-                <button id="passwordAccept">OK</button>
-                <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
-              </div>
-          </dialog>
-        </div>
-
-      </div>
+      @LockedEdit(icons, "")
     </section>
     <main>
       @formatMatches
@@ -58,7 +39,37 @@ templ baseLayout(formatMatches templ.Component, templateConstants *TemplateConst
 </html>
 }
 
-templ generateMatches(matchStore MatchStore, constants *TemplateConstants) {
+templ LockedEdit(icons TemplateIcons, msg string) {
+    <div id="lockUnlockContainer">
+      <div id="editContainer">
+        <div class="editButtons">
+          <button class="editButtons">New Round</button>
+          <button class="editButtons">Add Side</button>
+        </div>
+        <button id="lockUnlock" onclick="showLogin()">
+          @templ.Raw(icons.LockedIcon)
+        </button>
+      </div>
+
+      <div id="authenticateBackdrop">
+        <dialog id="authenticate">
+          <form hx-post="/authenticate" hx-target="#lockUnlockContainer" hx-swap="innerHTML">
+            <label>Password:</label>
+            <input type="password" id="passwordInput" />
+            <div id="authenticateOkCancel">
+              <button id="passwordAccept" onclick="authenticate('passwordInput')">OK</button>                
+              <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
+            </div>
+            if msg != "" {
+              <p id="authenticateMsg">msg</p>
+            }
+          </form>
+        </dialog>
+      </div>
+    </div>
+}
+
+templ GenerateMatches(matchStore store.MatchStore, icons TemplateIcons) {
     for _, m := range matchStore.Matches {
         <section class="match">
           <section class="competition">
@@ -75,9 +86,9 @@ templ generateMatches(matchStore MatchStore, constants *TemplateConstants) {
           <p><strong>VS: </strong>{ m.Round.Opponent }</p>
           <p class="alignedItems">
             if strings.EqualFold(m.Round.Venue, "Heathmont") { 
-              @templ.Raw(constants.HomeIcon)
+              @templ.Raw(icons.HomeIcon)
             } else {
-              @templ.Raw(constants.AwayIcon)
+              @templ.Raw(icons.AwayIcon)
             }
             <span class="alignedText">
               { m.Round.Venue }
@@ -85,7 +96,7 @@ templ generateMatches(matchStore MatchStore, constants *TemplateConstants) {
           </p>
           <p>
             <strong>Duty Selector: </strong>{ m.DutySelector.Name }<span>
-              @templ.Raw(constants.PhoneIcon)
+              @templ.Raw(icons.PhoneIcon)
               <a { formatPhoneNumberURI(m.DutySelector.Phone) }>{ m.DutySelector.Phone }</a>
             </span>
           </p>
@@ -97,13 +108,13 @@ templ generateMatches(matchStore MatchStore, constants *TemplateConstants) {
 
         <section class="side">
           <section class="sideHeader">
-            if hasResults(m.Side.Teams) {
-              <article class="sideResult" { getSideWinDrawLoss(m.Side.Teams) }>
-                <p>{ calculateSidePointsFor(m.Side.Teams) }</p> 
+            if store.HasResults(m.Side.Teams) {
+              <article class="sideResult" { store.GetSideWinDrawLoss(m.Side.Teams) }>
+                <p>{ store.CalculateSidePointsFor(m.Side.Teams) }</p> 
                 <p>:</p>
-                <p>{ calculateSidePointsAgainst(m.Side.Teams) }</p>
+                <p>{ store.CalculateSidePointsAgainst(m.Side.Teams) }</p>
                 <p class="sidePoints"> - </p>
-                <p class="sidePoints">{ calculateSidePoints(m.Side.Teams) } points</p>
+                <p class="sidePoints">{ store.CalculateSidePoints(m.Side.Teams) } points</p>
               </article>
             } else {
               <article></article>
@@ -132,8 +143,8 @@ templ generateMatches(matchStore MatchStore, constants *TemplateConstants) {
                     <p class="name">{ b.Name }</p>
                   </div>
                 }
-                if hasResults(m.Side.Teams) {
-                  <div class="result" { getTeamWinDrawLoss(t) }>
+                if store.HasResults(m.Side.Teams) {
+                  <div class="result" { store.GetTeamWinDrawLoss(t) }>
                     <p> { t.Shots.For }</p>
                     <p>:</p>
                     <p>{ t.Shots.Against }</p>

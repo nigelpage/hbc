@@ -156,9 +156,22 @@ strong {
   width: 100%;
 }
 
-#authenticate button {
+#authenticate label {
+  font-weight: lighter;
   width: 70px;
-  margin-top: 5px;
+  margin: 5px 0 0;
+}
+
+#authenticate button {
+  min-width: 45%;
+}
+
+#authenticateMsg {
+  color: red;
+}
+
+#passwordInput {
+  margin: 5px 0px;
 }
 
 .editButtons button {
