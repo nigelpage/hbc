@@ -1,11 +1,19 @@
+var lid = loginDialog();
+
+function loginDialog() {
+  if (lid == null) {
+    lid = document.getElementById("authenticate");
+  }
+
+  return lid;
+}
+
 function showLogin() {
-  loginDialog = document.getElementById("authenticate");
-  loginDialog.showModal();
+  loginDialog().showModal();
 }
 
 function hideLogin() {
-  loginDialog = document.getElementById("authenticate");
-  loginDialog.close();
+  loginDialog().close();
 }
 
 function getFieldValue(fieldID) {

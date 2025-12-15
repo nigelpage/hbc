@@ -31,15 +31,17 @@ type MatchStore struct {
 
 type Team struct {
 	Duty string `json:"duty,omitempty"`
-	Bowlers []struct {
-		Position string `json:"position"`
-		Name     string `json:"name"`
-		Role     string `json:"role"`
-	} `json:"team"`
+	Bowlers []Bowler `json:"team"`
     Shots struct {
         For     int `json:"for"`
         Against int `json:"against"`
     } `json:"shots"`
+}
+
+type Bowler struct {
+	Position string `json:"position"`
+	Name     string `json:"name"`
+	Role     string `json:"role"`
 }
 
 func HasResults(teams []Team) bool {

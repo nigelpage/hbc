@@ -7,6 +7,7 @@ tool github.com/a-h/templ/cmd/templ
 require (
 	github.com/a-h/templ v0.3.960
 	github.com/labstack/echo/v4 v4.13.4
+	golang.org/x/crypto v0.40.0
 )
 
 require (
@@ -22,7 +23,6 @@ require (
 	github.com/natefinch/atomic v1.0.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/crypto v0.40.0 // indirect
 	golang.org/x/mod v0.26.0 // indirect
 	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
