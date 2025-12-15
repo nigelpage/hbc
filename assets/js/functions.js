@@ -1,11 +1,5 @@
-var lid = loginDialog();
-
 function loginDialog() {
-  if (lid == null) {
-    lid = document.getElementById("authenticate");
-  }
-
-  return lid;
+  return document.getElementById("authenticate");
 }
 
 function showLogin() {

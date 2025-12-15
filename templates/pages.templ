@@ -48,13 +48,14 @@ templ LockedEdit(icons TemplateIcons, msg string) {
       </div>
       <div id="authenticateBackdrop">
         <dialog id="authenticate">
-          <form hx-post="/authenticate" hx-target="#lockUnlockContainer" hx-swap="innerHTML">
+          <form hx-post="/authenticate" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
+            <input type="username" hidden name="username" autocomplete="username"/>
             <label>Password:
               <input type="password" id="passwordInput" name="password" autocomplete="current-password"/>
             </label>
             <div id="authenticateOkCancel">
               <button type="submit" id="passwordAccept">OK</button>                
-              <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
+              <button id="passwordCancel">Cancel</button>
             </div>
             if msg != "" {
               <p id="authenticateMsg">msg</p>
@@ -66,13 +67,15 @@ templ LockedEdit(icons TemplateIcons, msg string) {
 }
 
 templ UnlockedEdit(icons TemplateIcons) {
-    <div id="editContainer">
-      <div id="editButtonsContainer">
-        <button class="editButtons">New Round</button>
-        <button class="editButtons">Add Side</button>
-        <button id="lockUnlock" hx-get="/lock" hx-target="#lockUnlockContainer" hx-swap="innerHTML">
-          @templ.Raw(icons.UnlockedIcon)
-        </button>
+    <div id="lockUnlockContainer">
+      <div id="editContainer">
+        <div id="editButtonsContainer">
+          <button class="editButtons">New Round</button>
+          <button class="editButtons">Add Side</button>
+          <button id="lockUnlock" hx-get="/lock" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
+            @templ.Raw(icons.UnlockedIcon)
+          </button>
+        </div>
       </div>
     </div>
 }
