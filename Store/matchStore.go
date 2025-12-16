@@ -1,7 +1,10 @@
 package store
 
 type MatchStore struct {
-	Matches []struct {
+	Matches []Match `json:"matches"`
+}
+
+type Match struct {
 		Competition struct {
 			Name        string `json:"name"`
 			BowlslinkID string `json:"bowlslinkId"`
@@ -24,13 +27,12 @@ type MatchStore struct {
 			Updated string `json:"updated"`
 			Name    string `json:"name"`
 			Manager string `json:"manager"`
-			Teams 	[]Team	`json:"teams"`
+			Teams 	[]Team `json:"teams"`
 		} `json:"side"`
-	} `json:"matches"`
 }
 
 type Team struct {
-	Duty string `json:"duty,omitempty"`
+	Duty string 	 `json:"duty,omitempty"`
 	Bowlers []Bowler `json:"team"`
     Shots struct {
         For     int `json:"for"`

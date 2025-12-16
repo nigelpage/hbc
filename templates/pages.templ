@@ -50,7 +50,7 @@ templ LockedEdit(icons TemplateIcons, msg string) {
         <dialog id="authenticate">
           <form hx-post="/authenticate" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
             <input type="username" hidden name="username" autocomplete="username"/>
-            <label>Password:
+            <label>Password
               <input type="password" id="passwordInput" name="password" autocomplete="current-password"/>
             </label>
             <div id="authenticateOkCancel">
@@ -89,8 +89,7 @@ templ UnlockedEdit(icons TemplateIcons) {
     </div>
 }
 
-templ GenerateMatches(matchStore store.MatchStore, icons TemplateIcons) {
-    for _, m := range matchStore.Matches {
+templ generateMatch(m store.Match, icons TemplateIcons) {
         <section class="match">
           <section class="competition">
           <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
@@ -176,5 +175,10 @@ templ GenerateMatches(matchStore store.MatchStore, icons TemplateIcons) {
           </section>
         </section>
       </section>
+}
+
+templ GenerateMatches(matchStore store.MatchStore, icons TemplateIcons) {
+    for _, m := range matchStore.Matches {
+      @generateMatch(m, icons)
   }
 }

@@ -121,7 +121,6 @@ strong {
 #lockUnlockContainer {
   display: flex;
   justify-content: flex-end;
-  anchor-name: --lockUnlockAnchor;
 }
 
 #editContainer {
@@ -135,6 +134,7 @@ strong {
 #lockedUnlockedIcon {
   width: 1.5rem;
   cursor: pointer;
+  anchor-name: --lockUnlockAnchor;
 }
 
 #lockUnlock {
@@ -154,7 +154,6 @@ strong {
   border-color: rgb(40 40 40 / 25%);
   border-radius: 15px;
   box-shadow: 0 0 5px 1px rgba(40, 40, 40, 0.2);
-  margin-right: 10px;
   padding: 10px;
   min-width: 200px;
   max-width: 200px;

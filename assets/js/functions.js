@@ -3,11 +3,17 @@ function loginDialog() {
 }
 
 function showLogin() {
-  loginDialog().showModal();
+  ld = loginDialog();
+  if (!ld.open) {
+    ld.showModal();
+  }
 }
 
 function hideLogin() {
-  loginDialog().close();
+  ld = loginDialog();
+  if (ld.open) {
+    ld.close();
+  }
 }
 
 function getFieldValue(fieldID) {
