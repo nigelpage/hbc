@@ -42,7 +42,7 @@ templ BaseLayout(formatMatches templ.Component, icons TemplateIcons) {
 templ LockedEdit(icons TemplateIcons, msg string) {
     <div id="lockUnlockContainer">
       <div id="editContainer">
-        <button id="lockUnlock" onclick="showLogin()">
+        <button id="lockUnlock" class="editButtons" onclick="showLogin()">
           @templ.Raw(icons.LockedIcon)
         </button>
       </div>
@@ -55,7 +55,7 @@ templ LockedEdit(icons TemplateIcons, msg string) {
             </label>
             <div id="authenticateOkCancel">
               <button type="submit" id="passwordAccept">OK</button>                
-              <button id="passwordCancel">Cancel</button>
+              <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
             </div>
             if msg != "" {
               <p id="authenticateMsg">msg</p>
@@ -70,10 +70,19 @@ templ UnlockedEdit(icons TemplateIcons) {
     <div id="lockUnlockContainer">
       <div id="editContainer">
         <div id="editButtonsContainer">
-          <button class="editButtons">New Round</button>
-          <button class="editButtons">Add Side</button>
-          <button id="lockUnlock" hx-get="/lock" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
+          <button class="editButtons">
+            @templ.Raw(icons.AddIcon)
+            <span>Week</span>
+          </button>
+          <button class="editButtons" hx-get="/lock" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
             @templ.Raw(icons.UnlockedIcon)
+          </button>
+          <button class="editButtons">
+            @templ.Raw(icons.AddIcon)
+            <span>Side</span>
+          </button>
+          <button class="editButtons">
+            @templ.Raw(icons.HealthcheckIcon)
           </button>
         </div>
       </div>
