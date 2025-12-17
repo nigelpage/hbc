@@ -18,5 +18,5 @@ func main() {
 	app.GET("/lock", handlers.LockAuthenticationHandler)
 
 	/* Start HTTP server */
-	app.Logger.Fatal(app.Start(":4000"))
+	app.Logger.Fatal(app.StartTLS(":4000", "cert.pem", "key.pem"))
 }
