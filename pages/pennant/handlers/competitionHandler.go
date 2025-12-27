@@ -1,11 +1,11 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"encoding/json"
-	"os"
 	"net/http"
+	"os"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -16,7 +16,7 @@ import (
 
 func getStoredMatches(comp string) store.MatchStore {
 	// Placeholder function to simulate fetching stored matches
-	pennantCompetitionStore := fmt.Sprintf("Store/%s20251108.json", string(comp[0]))
+	pennantCompetitionStore := fmt.Sprintf("pages/pennant/store/%s20251108.json", string(comp[0]))
 	jsonFile, err := os.Open(pennantCompetitionStore)
 	if err != nil {
 		fmt.Println("Error opening JSON file:", err)

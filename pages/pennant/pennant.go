@@ -7,9 +7,9 @@ import (
 
 func GetHandlers() []i.Handler {
 	return []i.Handler{
-		{UrlPattern: "/pennant/", 				Function: h.WeekendCompetitionHandler},
-		{UrlPattern: "/pennant/:competition", 	Function: h.CompetitionHandler},
-		{UrlPattern: "/pennant/authenticate", 	Function: h.AuthenticationHandler},
-		{UrlPattern: "/pennant/lock", 			Function: h.LockAuthenticationHandler},
+		{UrlPattern: "/pennant", 				Verb: "GET", 	Function: h.WeekendCompetitionHandler},
+		{UrlPattern: "/pennant/:competition", 	Verb: "GET", 	Function: h.CompetitionHandler},
+		{UrlPattern: "/pennant/authenticate", 	Verb: "POST", 	Function: h.AuthenticationHandler},
+		{UrlPattern: "/pennant/lock", 			Verb: "GET", 	Function: h.LockAuthenticationHandler},
 	}
 }

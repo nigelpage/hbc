@@ -38,9 +38,11 @@ func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
 func main() {
 	app := echo.New()
 	/* Setup a handler for static files (e.g. CSS, JS etc...) */
-	app.Static("/static", "./assets")
+	app.Static("/static", "/assets")
 	
 	/* Register HTTP handlers */
+	
+	/* ...for pennant page */
 
 	err := registerHandlers(p.GetHandlers(), app)
 	if err != nil {
