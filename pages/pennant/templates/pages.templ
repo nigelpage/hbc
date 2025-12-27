@@ -1,0 +1,184 @@
+package templates
+
+import (
+  "strings"
+	"github.com/nigelpage/pennant/store"
+)
+
+templ BaseLayout(formatMatches templ.Component, icons TemplateIcons) {
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pennant</title>
+    <script src="/static/htmx/htmx.min.js"></script>
+    <script src="/static/js/functions.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="data:,">
+  </head>
+
+  <body>
+    <h1>Select competition</h1>
+    <section id="pageHeader">
+      <div class="dropdown">
+        <button class="dropbtn">Weekend Pennant</button>
+        <div class="dropdown-content">
+          <a href="#">Weekend Pennant</a>
+          <a href="#">Midweek Pennant</a>
+          <a href="#">Night Pennant</a>
+        </div>
+      </div>
+
+      @LockedEdit(icons, "")
+    </section>
+    <main>
+      @formatMatches
+    </main>
+  </body>
+</html>
+}
+
+templ LockedEdit(icons TemplateIcons, msg string) {
+    <div id="lockUnlockContainer">
+      <div id="editContainer">
+        <button id="lockUnlock" class="editButtons" onclick="showLogin()">
+          @templ.Raw(icons.LockedIcon)
+        </button>
+      </div>
+      <div id="authenticateBackdrop">
+        <dialog id="authenticate">
+          <form hx-post="/authenticate" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
+            <input type="username" hidden name="username" autocomplete="username"/>
+            <label>Password
+              <input type="password" id="passwordInput" name="password" autocomplete="current-password"/>
+            </label>
+            <div id="authenticateOkCancel">
+              <button type="submit" id="passwordAccept">OK</button>                
+              <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
+            </div>
+            if msg != "" {
+              <p id="authenticateMsg">msg</p>
+            }
+          </form>
+        </dialog>
+      </div>
+    </div>
+}
+
+templ UnlockedEdit(icons TemplateIcons) {
+    <div id="lockUnlockContainer">
+      <div id="editContainer">
+        <div id="editButtonsContainer">
+          <button class="editButtons">
+            @templ.Raw(icons.AddIcon)
+            <span>Week</span>
+          </button>
+          <button class="editButtons" hx-get="/lock" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
+            @templ.Raw(icons.UnlockedIcon)
+          </button>
+          <button class="editButtons">
+            @templ.Raw(icons.AddIcon)
+            <span>Side</span>
+          </button>
+          <button class="editButtons">
+            @templ.Raw(icons.HealthcheckIcon)
+          </button>
+        </div>
+      </div>
+    </div>
+}
+
+templ generateMatch(m store.Match, icons TemplateIcons) {
+        <section class="match">
+          <section class="competition">
+          <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
+          <div class="verticalRule"></div>
+          <p>Round { m.Round.Number }</p>
+          <div class="verticalRule"></div>
+          <p>
+            <time datetime="{ m.Round.PlayedAt }">{ formatTime(m.Round.PlayedAt, false) }</time>
+          </p>
+        </section>
+
+        <section class="round">
+          <p><strong>VS: </strong>{ m.Round.Opponent }</p>
+          <p class="alignedItems">
+            if strings.EqualFold(m.Round.Venue, "Heathmont") { 
+              @templ.Raw(icons.HomeIcon)
+            } else {
+              @templ.Raw(icons.AwayIcon)
+            }
+            <span class="alignedText">
+              { m.Round.Venue }
+            </span>
+          </p>
+          <p>
+            <strong>Duty Selector: </strong>{ m.DutySelector.Name }<span>
+              @templ.Raw(icons.PhoneIcon)
+              <a { formatPhoneNumberURI(m.DutySelector.Phone) }>{ m.DutySelector.Phone }</a>
+            </span>
+          </p>
+          <p>
+            <strong>Updated:</strong>
+            <time datetime="{ m.Side.Updated }">{ formatTime(m.Side.Updated, true) }</time>
+          </p>
+        </section>
+
+        <section class="side">
+          <section class="sideHeader">
+            if store.HasResults(m.Side.Teams) {
+              <article class="sideResult" { store.GetSideWinDrawLoss(m.Side.Teams) }>
+                <p>{ store.CalculateSidePointsFor(m.Side.Teams) }</p> 
+                <p>:</p>
+                <p>{ store.CalculateSidePointsAgainst(m.Side.Teams) }</p>
+                <p class="sidePoints"> - </p>
+                <p class="sidePoints">{ store.CalculateSidePoints(m.Side.Teams) } points</p>
+              </article>
+            } else {
+              <article></article>
+            }
+            <article class="sideName">{ m.Side.Name }</article>
+
+            <article class="sideHeaderTile">
+              <p class="sideHeaderTileTitle">{ m.Round.PlayedOn.Title }</p>
+              <p class="sideHeaderTileDetails">{ m.Round.PlayedOn.Details }</p>
+            </article>
+
+            <article class="sideHeaderTile">
+              <p class="sideHeaderTileTitle">Side Manager</p>
+              <p class="sideHeaderTileDetails">{ m.Side.Manager }</p>
+            </article>
+          </section>
+
+          <section class="teams">
+            for _, t := range m.Side.Teams {
+            <article class="team">
+              <p class="duty">{ t.Duty }</p>
+                for _, b := range t.Bowlers {
+                  <div class="bowler">
+                    <p class="position">{ b.Position }</p>
+                    <p class="role">{ b.Role }</p>
+                    <p class="name">{ b.Name }</p>
+                  </div>
+                }
+                if store.HasResults(m.Side.Teams) {
+                  <div class="result" { store.GetTeamWinDrawLoss(t) }>
+                    <p> { t.Shots.For }</p>
+                    <p>:</p>
+                    <p>{ t.Shots.Against }</p>
+                  </div>
+                }
+
+              </article>
+           }
+          </section>
+        </section>
+      </section>
+}
+
+templ GenerateMatches(matchStore store.MatchStore, icons TemplateIcons) {
+    for _, m := range matchStore.Matches {
+      @generateMatch(m, icons)
+  }
+}

@@ -5,6 +5,7 @@ import (
 )
 
 type Handler struct{
-	urlPattern string
-	function echo.HandlerFunc
+	UrlPattern string
+	Verb       string
+	Function echo.HandlerFunc
 }

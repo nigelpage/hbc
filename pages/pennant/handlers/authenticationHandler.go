@@ -6,7 +6,7 @@ import (
 
 	// "github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
-	"github.com/nigelpage/pennant/templates"
+	"github.com/nigelpage/hbc/pages/pennant/templates"
 	"golang.org/x/crypto/bcrypt"
 )
 

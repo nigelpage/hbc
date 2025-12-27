@@ -10,8 +10,8 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 
-	"github.com/nigelpage/pennant/store"
-	"github.com/nigelpage/pennant/templates"
+	"github.com/nigelpage/hbc/pages/pennant/store"
+	"github.com/nigelpage/hbc/pages/pennant/templates"
 )
 
 func getStoredMatches(comp string) store.MatchStore {
