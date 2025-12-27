@@ -34,7 +34,7 @@ func BaseLayout(formatMatches templ.Component, icons TemplateIcons) templ.Compon
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Pennant</title><script src=\"/static/htmx/htmx.min.js\"></script><script src=\"/static/js/functions.js\"></script><link rel=\"stylesheet\" href=\"/static/css/styles.css\"><link rel=\"icon\" href=\"data:,\"></head><body><h1>Select competition</h1><section id=\"pageHeader\"><div class=\"dropdown\"><button class=\"dropbtn\">Weekend Pennant</button><div class=\"dropdown-content\"><a href=\"#\">Weekend Pennant</a> <a href=\"#\">Midweek Pennant</a> <a href=\"#\">Night Pennant</a></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Pennant</title><script src=\"/static/pennant/assets/htmx/htmx.min.js\"></script><script src=\"/static/pennant/assets/js/functions.js\"></script><link rel=\"stylesheet\" href=\"/static/pennant/assets/css/styles.css\"><link rel=\"icon\" href=\"data:,\"></head><body><h1>Select competition</h1><section id=\"pageHeader\"><div class=\"dropdown\"><button class=\"dropbtn\">Weekend Pennant</button><div class=\"dropdown-content\"><a href=\"#\">Weekend Pennant</a> <a href=\"#\">Midweek Pennant</a> <a href=\"#\">Night Pennant</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

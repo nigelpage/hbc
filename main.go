@@ -38,7 +38,7 @@ func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
 func main() {
 	app := echo.New()
 	/* Setup a handler for static files (e.g. CSS, JS etc...) */
-	app.Static("/static", "/assets")
+	app.Static("/static", "pages")
 	
 	/* Register HTTP handlers */
 	
