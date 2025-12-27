@@ -1,4 +1,4 @@
-module github.com/nigelpage/pennant
+module github.com/nigelpage/hbc
 
 go 1.25.5
 
