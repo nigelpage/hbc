@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/echo/v4"
 	i "github.com/nigelpage/hbc/internal"
 	p "github.com/nigelpage/hbc/pages/pennant"
@@ -37,6 +38,9 @@ func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
 
 func main() {
 	app := echo.New()
+
+	app.Pre(middleware.RemoveTrailingSlash())
+	
 	/* Setup a handler for static files (e.g. CSS, JS etc...) */
 	app.Static("/static", "pages")
 	
@@ -48,6 +52,9 @@ func main() {
 	if err != nil {
 		app.Logger.Fatal(err)	
 	}
+
+	/* Setup logging middleware */
+	app.Use(middleware.Logger())
 
 	/* Start HTTP server */
 	app.Logger.Fatal(app.Start(":4000"))
