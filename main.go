@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	i "github.com/nigelpage/hbc/internal"
 	p "github.com/nigelpage/hbc/pages/pennant"
-	//"github.com/nigelpage/hbc/dbstore"
+	"github.com/nigelpage/hbc/store/db"
 )
 
 func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
@@ -42,6 +42,7 @@ func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
 
 func main() {
 	// Initialise database connection
+	// Forces use of environment variables DBNAME, PGUSER and PGPASSWORD
 	connString := ""
 
 	pool, err := pgxpool.New(context.Background(), connString)
@@ -50,26 +51,26 @@ func main() {
 	}
 	defer pool.Close()
 
-	// Initialise Echo web server
-	app := echo.New()
+	// Initialise app
+	app := NewApp(echo.New(), pool, dbstore.New(pool))
 
-	app.Pre(middleware.RemoveTrailingSlash())
+	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	// Setup a handler for static files (e.g. CSS, JS etc...)
-	app.Static("/static", "pages")
+	app.Echo.Static("/static", "pages")
 	
 	// Register HTTP handlers
 	
 	// ...for pennant page
 
-	err = registerHandlers(p.GetHandlers(), app)
+	err = registerHandlers(p.GetHandlers(), app.Echo)
 	if err != nil {
-		app.Logger.Fatal(err)	
+		app.Echo.Logger.Fatal(err)	
 	}
 
 	// Setup logging middleware
-	app.Use(middleware.RequestLogger())
+	app.Echo.Use(middleware.RequestLogger())
 
 	// Start HTTP server
-	app.Logger.Fatal(app.Start(":4000"))
+	app.Echo.Logger.Fatal(app.Echo.Start(":4000"))
 }
