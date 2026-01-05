@@ -1,2 +1,2 @@
-# pennant
-Pennant selections and results
+# hbc
+Web site for Heathmont Bowls Club
