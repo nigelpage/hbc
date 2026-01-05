@@ -13,7 +13,9 @@ WHERE is_bowling_member = TRUE AND is_active = TRUE
 ORDER BY last_name, first_name;
 
 -- name: GetInactiveMembers :many
-SELECT * FROM members WHERE is_active = FALSE ORDER BY last_name, first_name;
+SELECT * FROM members
+WHERE is_active = FALSE
+ORDER BY last_name, first_name;
 
 -- name: FindMembersByName :many
 SELECT * FROM members

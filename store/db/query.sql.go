@@ -3,7 +3,7 @@
 //   sqlc v1.30.0
 // source: query.sql
 
-package store
+package dbstore
 
 import (
 	"context"
@@ -146,7 +146,9 @@ func (q *Queries) GetBowlingMembers(ctx context.Context) ([]Member, error) {
 }
 
 const getInactiveMembers = `-- name: GetInactiveMembers :many
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members WHERE is_active = FALSE ORDER BY last_name, first_name
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
+WHERE is_active = FALSE
+ORDER BY last_name, first_name
 `
 
 func (q *Queries) GetInactiveMembers(ctx context.Context) ([]Member, error) {

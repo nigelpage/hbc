@@ -10,7 +10,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 
-	"github.com/nigelpage/hbc/pages/pennant/store"
+	"github.com/nigelpage/hbc/store/json"
 	"github.com/nigelpage/hbc/pages/pennant/templates"
 )
 

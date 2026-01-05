@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/jackc/pgx/v5"
+
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	i "github.com/nigelpage/hbc/internal"
 	p "github.com/nigelpage/hbc/pages/pennant"
+	//"github.com/nigelpage/hbc/dbstore"
 )
 
 func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
@@ -37,25 +41,35 @@ func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
 }
 
 func main() {
+	// Initialise database connection
+	ctx := context.Background()
+
+	conn, err := pgx.Connect(ctx, "postgres://${PG_USERNAME}:${PG_PASSWORD}@localhost:5432/hbc")
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close(ctx)
+
+	// Initialise Echo web server
 	app := echo.New()
 
 	app.Pre(middleware.RemoveTrailingSlash())
 	
-	/* Setup a handler for static files (e.g. CSS, JS etc...) */
+	// Setup a handler for static files (e.g. CSS, JS etc...)
 	app.Static("/static", "pages")
 	
-	/* Register HTTP handlers */
+	// Register HTTP handlers
 	
-	/* ...for pennant page */
+	// ...for pennant page
 
-	err := registerHandlers(p.GetHandlers(), app)
+	err = registerHandlers(p.GetHandlers(), app)
 	if err != nil {
 		app.Logger.Fatal(err)	
 	}
 
-	/* Setup logging middleware */
-	app.Use(middleware.Logger())
+	// Setup logging middleware
+	app.Use(middleware.RequestLogger())
 
-	/* Start HTTP server */
+	// Start HTTP server
 	app.Logger.Fatal(app.Start(":4000"))
 }
