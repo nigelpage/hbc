@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -42,13 +42,13 @@ func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
 
 func main() {
 	// Initialise database connection
-	ctx := context.Background()
+	connString := ""
 
-	conn, err := pgx.Connect(ctx, "postgres://${PG_USERNAME}:${PG_PASSWORD}@localhost:5432/hbc")
+	pool, err := pgxpool.New(context.Background(), connString)
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close(ctx)
+	defer pool.Close()
 
 	// Initialise Echo web server
 	app := echo.New()
