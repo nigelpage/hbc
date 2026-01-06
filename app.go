@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
-	dbstore "github.com/nigelpage/hbc/store/db"
+	"github.com/nigelpage/hbc/store/db"
 
 	"github.com/labstack/echo/v4"
 )

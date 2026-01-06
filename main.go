@@ -9,8 +9,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	i "github.com/nigelpage/hbc/internal"
-	p "github.com/nigelpage/hbc/pages/pennant"
-	"github.com/nigelpage/hbc/store/db"
+	"github.com/nigelpage/hbc/pages/pennant"
+	"github.com/nigelpage/hbc/pages/index"
+	dbstore "github.com/nigelpage/hbc/store/db"
 )
 
 func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
@@ -54,16 +55,24 @@ func main() {
 	// Initialise app
 	app := NewApp(echo.New(), pool, dbstore.New(pool))
 
+	// Migrate from Json to database
+	// err = migrateFromJsonToDB(app.Pool, app.Queries)
+	// if err != nil {
+	// 	app.Echo.Logger.Fatal(err)	
+	// }
+
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	// Setup a handler for static files (e.g. CSS, JS etc...)
 	app.Echo.Static("/static", "pages")
 	
 	// Register HTTP handlers
+	// ...for index page
+	err = registerHandlers(index.GetHandlers(), app.Echo)
 	
 	// ...for pennant page
 
-	err = registerHandlers(p.GetHandlers(), app.Echo)
+	err = registerHandlers(pennant.GetHandlers(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
