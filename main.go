@@ -11,7 +11,7 @@ import (
 	i "github.com/nigelpage/hbc/internal"
 	"github.com/nigelpage/hbc/pages/pennant"
 	"github.com/nigelpage/hbc/pages/index"
-	dbstore "github.com/nigelpage/hbc/store/db"
+	storeDB "github.com/nigelpage/hbc/store/db"
 )
 
 func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
@@ -53,7 +53,7 @@ func main() {
 	defer pool.Close()
 
 	// Initialise app
-	app := NewApp(echo.New(), pool, dbstore.New(pool))
+	app := NewApp(echo.New(), pool, storeDB.New(pool))
 
 	// Migrate from Json to database
 	// err = migrateFromJsonToDB(app.Pool, app.Queries)

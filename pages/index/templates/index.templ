@@ -7,10 +7,47 @@ templ BaseLayout() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBC</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="static/assets/img/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="static/assets/img/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="static/assets/img/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="static/assets/img/favicon_io/site.webmanifest">
+    <script src="/static/assets/js/htmx.min.js"></script>
+    <link rel="stylesheet" href="/static/index/assets/css/styles.css">
   </head>
 
   <body>
-    <h1>Under Construction</h1>
+    <section id="pageHeader">
+      <div class="header-container">
+        <div class="header-item header-logo-container">
+          <img src="static/index/assets/img/hbc-logo.webp" alt="Heathmont Bowls Club" class="header-item header-logo"/>
+        </div>
+        <div class="header-item header-title-container">
+          <h1 class="header-item header-title">Heathmont Bowls Club</h1>
+        </div>
+        <div class="header-item header-login-container">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="header-item header-login">
+            <path d="M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z"/>
+          </svg>
+        </div>
+        <div class="header-item header-navbar-container">
+          <a href="/" class="header-navbar-item">
+            home
+          </a>
+          <div class="header-navbar-item header-navbar-dropdown">
+            <p class="header-navbar-item">bowls</p>
+            <div class="header-navbar-dropdown-container">
+              <a href="/pennant" class="header-item header-navbar-dropdown-item">
+                pennant
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pageBody">
+    </section>
+
   </body>
 </html>
 }
