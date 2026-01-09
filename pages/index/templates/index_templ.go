@@ -8,7 +8,7 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func BaseLayout() templ.Component {
+func BaseLayout(tickerMessages []string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,7 +29,40 @@ func BaseLayout() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>HBC</title><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"static/assets/img/favicon_io/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"static/assets/img/favicon_io/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"static/assets/img/favicon_io/favicon-16x16.png\"><link rel=\"manifest\" href=\"static/assets/img/favicon_io/site.webmanifest\"><script src=\"/static/assets/js/htmx.min.js\"></script><link rel=\"stylesheet\" href=\"/static/index/assets/css/styles.css\"></head><body><section id=\"pageHeader\"><div class=\"header-container\"><div class=\"header-item header-logo-container\"><img src=\"static/index/assets/img/hbc-logo.webp\" alt=\"Heathmont Bowls Club\" class=\"header-item header-logo\"></div><div class=\"header-item header-title-container\"><h1 class=\"header-item header-title\">Heathmont Bowls Club</h1></div><div class=\"header-item header-login-container\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" class=\"header-item header-login\"><path d=\"M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z\"></path></svg></div><div class=\"header-item header-navbar-container\"><a href=\"/\" class=\"header-navbar-item\">home</a><div class=\"header-navbar-item header-navbar-dropdown\"><p class=\"header-navbar-item\">bowls</p><div class=\"header-navbar-dropdown-container\"><a href=\"/pennant\" class=\"header-item header-navbar-dropdown-item\">pennant</a></div></div></div></div></section><section id=\"pageBody\"></section></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>HBC</title><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"static/assets/img/favicon/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"static/assets/img/favicon/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"static/assets/img/favicon/favicon-16x16.png\"><link rel=\"manifest\" href=\"static/assets/img/favicon/site.webmanifest\"><script src=\"/static/assets/js/htmx.min.js\"></script><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\"><link rel=\"stylesheet\" href=\"/static/index/assets/css/styles.css\"></head><body><section id=\"pageHeader\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if len(tickerMessages) > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"ticker\"><ul>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			for _, tMsg := range tickerMessages {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<li><div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var2 string
+				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(tMsg)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 26, Col: 25}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></li>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</ul></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"header-container\"><div class=\"header-item header-logo-container\"><img src=\"static/index/assets/img/hbc-logo.webp\" alt=\"Heathmont Bowls Club\" class=\"header-item header-logo\"></div><div class=\"header-item header-title-container\"><h1 class=\"header-item header-title\">Heathmont Bowls Club</h1></div><div class=\"header-item header-login-container\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" class=\"header-item header-login\"><path d=\"M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z\"></path></svg></div><nav class=\"navbar\"><a href=\"/\">home</a><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">bowls  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/pennant\">pennant</a> <a href=\"/membership\">membership</a></div></div><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">functions  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/rocketlounge\">rocket lounge</a> <a href=\"/venuehire\">venue hire</a></div></div><a href=\"/sponsors\">sponsors</a><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">about  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/board\">board</a> <a href=\"/codeofconduct\">code of conduct</a> <a href=\"/history\">our club</a> <a href=\"/contactus\">contact</a></div></div></nav></div></section><section id=\"pageBody\"></section></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

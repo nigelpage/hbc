@@ -4,14 +4,14 @@
 /* Stylesheet for pennant sides and results */
 
 :root {
-  --radius: 30px;
-  --shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
-  --winColor: rgba(0, 128, 0, 0.45);
-  --lossColor: rgba(255, 0, 0, 0.45);
-  --drawColor: rgba(255, 166, 0, 0.45);
-  --primaryBackgroundColor: rgb(247, 237, 105);
-  --gridGap: 1rem;
-  --teamWidth: 250px;
+  --navbar-item-width: 8rem;
+  --navbar-item-height: 2rem;
+  --navbar--item-color: antiquewhite;
+  --navbar-item-background-color: black;
+  --navbar-item-hover-color: black;
+  --navbar-item-hover-background-color: antiquewhite;
+  --ticker-gap: 15px;
+  --ticker-color: rgb(61, 7, 76);
 }
 
 * {
@@ -23,12 +23,7 @@
 
 html {
   min-height: 100%;
-  background: linear-gradient(
-    to bottom right,
-    dodgerblue,
-    white,
-    var(--primaryBackgroundColor)
-  );
+  background: linear-gradient(to bottom right, dodgerblue, white, lemonchiffon);
   background-attachment: fixed;
 }
 
@@ -104,67 +99,103 @@ main {
   height: auto;
 }
 
-.header-navbar-container {
-  grid-column: 2 / 4;
-  grid-row: 2 / 2;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: left;
-  align-items: stretch;
+/* navigation bar */
+
+.navbar {
+  overflow: hidden;
+  background-color: #333;
 }
 
-.header-navbar-item {
-  display: flex;
-  width: 8rem;
-  height: 2rem;
-  justify-content: center;
-  align-items: center;
-
-  background-color: black;
-  color: antiquewhite;
-  font-weight: normal;
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
   text-decoration: none;
 }
 
-.header-navbar-item:hover {
-  background-color: antiquewhite;
-  color: black;
-  font-weight: bold;
+.navbar-dropdown {
+  float: left;
+  overflow: hidden;
 }
 
-.header-navbar-dropdown {
-  position: relative;
-  display: inline-block;
+.navbar-dropdown .navbar-dropdown-button {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
 }
 
-.header-navbar-dropdown-container {
+.navbar a:hover,
+.navbar-dropdown:hover .navbar-dropdown-button {
+  background-color: red;
+}
+
+.navbar-dropdown-content {
   display: none;
   position: absolute;
-  background-color: black;
-  color: antiquewhite;
-  width: 8rem;
-  height: 2rem;
-  min-width: 8rem;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
-.header-navbar-dropdown-container:hover {
-  background-color: antiquewhite;
+.navbar-dropdown-content a {
+  float: none;
   color: black;
-  display: block;
-}
-
-.header-navbar-dropdown-item {
-  background-color: black;
-  color: antiquewhite;
-  font-weight: normal;
+  padding: 12px 16px;
   text-decoration: none;
   display: block;
+  text-align: left;
 }
 
-.header-navbar-dropdown-item:hover {
-  background-color: antiquewhite;
-  color: black;
+.navbar-dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.navbar-dropdown:hover .navbar-dropdown-content {
+  display: block;
+}
+
+/* ticker */
+
+.ticker {
+  border: none;
+  display: flex;
+  color: var(--ticker-color);
   font-weight: bold;
+  gap: var(--ticker-gap);
+  overflow: hidden;
+  padding-block: 6px;
+  user-select: none;
+  margin-inline: 4px;
+}
+
+.ticker ul {
+  align-items: center;
+  animation: scroll 20s linear infinite;
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--ticker-gap);
+  justify-content: space-between;
+  list-style: none;
+  min-width: 100%;
+}
+
+.ticker:hover ul {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--ticker-gap)));
+  }
 }
