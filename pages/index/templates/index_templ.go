@@ -8,7 +8,11 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func BaseLayout(tickerMessages []string) templ.Component {
+import (
+	"github.com/nigelpage/hbc/common"
+)
+
+func BaseLayout(tickerItems []*common.TickerItem) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -33,36 +37,49 @@ func BaseLayout(tickerMessages []string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if len(tickerMessages) > 0 {
+		if len(tickerItems) > 0 {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"ticker\"><ul>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			for _, tMsg := range tickerMessages {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<li><div>")
+			for _, tItem := range tickerItems {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<li class=\"ticker-item-container\"><div class=\"ticker-category\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var2 string
-				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(tMsg)
+				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(tItem.GetCategory())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 26, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 30, Col: 64}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></li>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><span class=\"ticker-message\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var3 string
+				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(tItem.GetMessage())
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 31, Col: 63}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</span></li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</ul></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</ul></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"header-container\"><div class=\"header-item header-logo-container\"><img src=\"static/index/assets/img/hbc-logo.webp\" alt=\"Heathmont Bowls Club\" class=\"header-item header-logo\"></div><div class=\"header-item header-title-container\"><h1 class=\"header-item header-title\">Heathmont Bowls Club</h1></div><div class=\"header-item header-login-container\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" class=\"header-item header-login\"><path d=\"M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z\"></path></svg></div><nav class=\"navbar\"><a href=\"/\">home</a><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">bowls  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/pennant\">pennant</a> <a href=\"/membership\">membership</a></div></div><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">functions  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/rocketlounge\">rocket lounge</a> <a href=\"/venuehire\">venue hire</a></div></div><a href=\"/sponsors\">sponsors</a><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">about  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/board\">board</a> <a href=\"/codeofconduct\">code of conduct</a> <a href=\"/history\">our club</a> <a href=\"/contactus\">contact</a></div></div></nav></div></section><section id=\"pageBody\"></section></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"header-container\"><div class=\"header-item header-logo-container\"><img src=\"static/index/assets/img/hbc-logo.webp\" alt=\"Heathmont Bowls Club\" class=\"header-item header-logo\"></div><div class=\"header-item header-title-container\"><h1 class=\"header-item header-title\">Heathmont Bowls Club</h1></div><div class=\"header-item header-login-container\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" class=\"header-item header-login\"><path d=\"M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z\"></path></svg></div><nav class=\"navbar\"><a href=\"/\">home</a><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">bowls  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/pennant\">pennant</a> <a href=\"/membership\">membership</a></div></div><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">functions  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/rocketlounge\">rocket lounge</a> <a href=\"/venuehire\">venue hire</a></div></div><a href=\"/sponsors\">sponsors</a><div class=\"navbar-dropdown\"><button class=\"navbar-dropdown-button\">about  <i class=\"fa fa-caret-down\"></i></button><div class=\"navbar-dropdown-content\"><a href=\"/board\">board</a> <a href=\"/codeofconduct\">code of conduct</a> <a href=\"/history\">our club</a> <a href=\"/contactus\">contact</a></div></div></nav></div></section><section id=\"pageBody\"></section></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

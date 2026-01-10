@@ -1,6 +1,10 @@
 package templates
 
-templ BaseLayout(tickerMessages []string) {
+import (
+  "github.com/nigelpage/hbc/common"
+)
+
+templ BaseLayout(tickerItems []*common.TickerItem) {
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,12 +22,13 @@ templ BaseLayout(tickerMessages []string) {
 
   <body>
     <section id="pageHeader">
-      if len(tickerMessages) > 0 {
+      if len(tickerItems) > 0 {
         <div class="ticker">
           <ul>
-          for _, tMsg := range tickerMessages {
-            <li>
-              <div>{ tMsg }</div>
+          for _, tItem := range tickerItems {
+            <li class="ticker-item-container">
+              <div class="ticker-category">{ tItem.GetCategory() }</div>
+              <span class="ticker-message">{ tItem.GetMessage() }</span>
             </li>
           }
           </ul>

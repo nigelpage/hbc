@@ -8,33 +8,33 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	i "github.com/nigelpage/hbc/internal"
+	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/pages/pennant"
 	"github.com/nigelpage/hbc/pages/index"
 	storeDB "github.com/nigelpage/hbc/store/db"
 )
 
-func registerHandlers(hdlrs []i.Handler, app *echo.Echo) error {
+func registerHandlers(hdlrs []*common.Handler, app *echo.Echo) error {
 	/* Register handlers */
 	for _, h := range hdlrs {
-		switch h.Verb {
+		switch h.GetVerb() {
 		case "GET":
-			app.GET(h.UrlPattern, h.Function)
+			app.GET(h.GetUrlPattern(), h.GetFunction())
 		case "POST":
-			app.POST(h.UrlPattern, h.Function)
+			app.POST(h.GetUrlPattern(), h.GetFunction())
 		case "PUT":
-			app.PUT(h.UrlPattern, h.Function)
+			app.PUT(h.GetUrlPattern(), h.GetFunction())
 		case "DELETE":
-			app.DELETE(h.UrlPattern, h.Function)
+			app.DELETE(h.GetUrlPattern(), h.GetFunction())
 		case "PATCH":
-			app.PATCH(h.UrlPattern, h.Function)
+			app.PATCH(h.GetUrlPattern(), h.GetFunction())
 		case "HEAD":
-			app.HEAD(h.UrlPattern, h.Function)
+			app.HEAD(h.GetUrlPattern(), h.GetFunction())
 		case "OPTIONS":
-			app.OPTIONS(h.UrlPattern, h.Function)
+			app.OPTIONS(h.GetUrlPattern(), h.GetFunction())
 		// Invalid HTTP verb
 		default:
-			return fmt.Errorf("Invalid HTTP verb specified - %s - for url pattern - %s", h.Verb, h.UrlPattern)
+			return fmt.Errorf("Invalid HTTP verb specified - %s - for url pattern - %s", h.GetVerb(), h.GetUrlPattern())
 		}
 	}
 

@@ -11,7 +11,8 @@
   --navbar-item-hover-color: black;
   --navbar-item-hover-background-color: antiquewhite;
   --ticker-gap: 15px;
-  --ticker-color: rgb(61, 7, 76);
+  --ticker-message-color: rgb(61, 7, 76);
+  --ticker-category-color: antiquewhite;
 }
 
 * {
@@ -167,8 +168,6 @@ main {
 .ticker {
   border: none;
   display: flex;
-  color: var(--ticker-color);
-  font-weight: bold;
   gap: var(--ticker-gap);
   overflow: hidden;
   padding-block: 6px;
@@ -185,6 +184,29 @@ main {
   justify-content: space-between;
   list-style: none;
   min-width: 100%;
+}
+
+.ticker-item-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ticker-category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 15px;
+  color: var(--ticker-category-color);
+  background-color: var(--ticker-message-color);
+  font-weight: bold;
+}
+
+.ticker-message {
+  color: var(--ticker-message-color);
+  font-weight: normal;
+  margin: 3px 7px;
 }
 
 .ticker:hover ul {
