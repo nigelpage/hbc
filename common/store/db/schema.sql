@@ -1,3 +1,16 @@
+CREATE TABLE IF NOT EXISTS ticker_categories (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title varchar(20)
+);
+
+CREATE TABLE IF NOT EXISTS ticker_messages (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    start_at TIMESTAMPTZ,
+    end_at TIMESTAMPTZ,
+    category_id INT REFERENCES ticker_categories(id),
+    info varchar(100)
+);
+
 CREATE TABLE IF NOT EXISTS members (
     membership_number INTEGER PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,

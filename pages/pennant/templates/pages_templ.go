@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	storeJSON "github.com/nigelpage/hbc/store/json"
+	storeJSON "github.com/nigelpage/hbc/common/store/json"
 	"strings"
 )
 

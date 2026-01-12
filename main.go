@@ -9,9 +9,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nigelpage/hbc/common"
-	"github.com/nigelpage/hbc/pages/pennant"
+	"github.com/nigelpage/hbc/common/store/excel"
 	"github.com/nigelpage/hbc/pages/index"
-	storeDB "github.com/nigelpage/hbc/store/db"
+	"github.com/nigelpage/hbc/pages/pennant"
 )
 
 func registerHandlers(hdlrs []*common.Handler, app *echo.Echo) error {
@@ -46,21 +46,23 @@ func main() {
 	// Forces use of environment variables DBNAME, PGUSER and PGPASSWORD
 	connString := ""
 
-	pool, err := pgxpool.New(context.Background(), connString)
-	if err != nil {
-		panic(err)
-	}
-	defer pool.Close()
+	ctx := context.Background();
 
-	// Initialise app
-	app := NewApp(echo.New(), pool, storeDB.New(pool))
+	dbPool, err := pgxpool.New(ctx, connString)
+	if err != nil {
+		panic("Unable to create connection pool")
+	}
+
+	defer dbPool.Close()
 
 	// Migrate from Json to database
 	// err = migrateFromJsonToDB(app.Pool, app.Queries)
-	// if err != nil {
-	// 	app.Echo.Logger.Fatal(err)	
-	// }
 
+	results, err := excel.UploadMembers(ctx, dbPool, "./common/store/excel/Members Draw list 02.01.2026.xlsx")
+	fmt.Printf("%v", results) // ** Temporary
+
+	// Initialise app
+	app := common.NewApp(echo.New())
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	// Setup a handler for static files (e.g. CSS, JS etc...)
@@ -69,6 +71,9 @@ func main() {
 	// Register HTTP handlers
 	// ...for index page
 	err = registerHandlers(index.GetHandlers(), app.Echo)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
 	
 	// ...for pennant page
 

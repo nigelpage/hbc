@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.30.0
 
-package dbstore
+package db
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
@@ -74,4 +74,17 @@ type Team struct {
 	ShotsAgainst pgtype.Int4
 	CreatedAt    pgtype.Timestamp
 	UpdatedAt    pgtype.Timestamp
+}
+
+type TickerCategory struct {
+	ID    int32
+	Title pgtype.Text
+}
+
+type TickerMessage struct {
+	ID         int32
+	StartAt    pgtype.Timestamptz
+	EndAt      pgtype.Timestamptz
+	CategoryID pgtype.Int4
+	Info       pgtype.Text
 }

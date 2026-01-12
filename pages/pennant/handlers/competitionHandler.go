@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/pages/pennant/templates"
-	store "github.com/nigelpage/hbc/store/json"
+	store "github.com/nigelpage/hbc/common/store/json"
 )
 
 func getStoredMatches(comp string) store.MatchStore {

@@ -1,3 +1,25 @@
+-- name: AddTickerCategory :exec
+INSERT INTO ticker_categories (title)
+VALUES ($1)
+RETURNING *;
+
+-- name: AddTickerMessage :exec
+INSERT INTO ticker_messages (start_at,
+                             end_at,
+                             category_id,
+                             info)
+VALUES ($1, $2, $3, $4);
+
+-- name: GetActiveTickers :many
+SELECT m.start_at AS start_at,
+       m.end_at AS end_at,
+       c.title AS category,
+       m.info AS info
+FROM ticker_messages m
+INNER JOIN ticker_categories c ON m.category_id = c.id
+WHERE m.start_at <= now() AND m.end_at > now()
+ORDER BY m.start_at;
+
 -- name: GetMembers :many
 SELECT * FROM members
 WHERE is_active = TRUE

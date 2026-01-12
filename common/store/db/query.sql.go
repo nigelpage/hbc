@@ -3,13 +3,49 @@
 //   sqlc v1.30.0
 // source: query.sql
 
-package dbstore
+package db
 
 import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const addTickerCategory = `-- name: AddTickerCategory :exec
+INSERT INTO ticker_categories (title)
+VALUES ($1)
+RETURNING id, title
+`
+
+func (q *Queries) AddTickerCategory(ctx context.Context, title pgtype.Text) error {
+	_, err := q.db.Exec(ctx, addTickerCategory, title)
+	return err
+}
+
+const addTickerMessage = `-- name: AddTickerMessage :exec
+INSERT INTO ticker_messages (start_at,
+                             end_at,
+                             category_id,
+                             info)
+VALUES ($1, $2, $3, $4)
+`
+
+type AddTickerMessageParams struct {
+	StartAt    pgtype.Timestamptz
+	EndAt      pgtype.Timestamptz
+	CategoryID pgtype.Int4
+	Info       pgtype.Text
+}
+
+func (q *Queries) AddTickerMessage(ctx context.Context, arg AddTickerMessageParams) error {
+	_, err := q.db.Exec(ctx, addTickerMessage,
+		arg.StartAt,
+		arg.EndAt,
+		arg.CategoryID,
+		arg.Info,
+	)
+	return err
+}
 
 const createMember = `-- name: CreateMember :one
 INSERT INTO members (membership_number,
@@ -97,6 +133,49 @@ func (q *Queries) FindMembersByName(ctx context.Context, dollar_1 pgtype.Text) (
 			&i.IsActive,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getActiveTickers = `-- name: GetActiveTickers :many
+SELECT m.start_at AS start_at,
+       m.end_at AS end_at,
+       c.title AS category,
+       m.info AS info
+FROM ticker_messages m
+INNER JOIN ticker_categories c ON m.category_id = c.id
+WHERE m.start_at <= now() AND m.end_at > now()
+ORDER BY m.start_at
+`
+
+type GetActiveTickersRow struct {
+	StartAt  pgtype.Timestamptz
+	EndAt    pgtype.Timestamptz
+	Category pgtype.Text
+	Info     pgtype.Text
+}
+
+func (q *Queries) GetActiveTickers(ctx context.Context) ([]GetActiveTickersRow, error) {
+	rows, err := q.db.Query(ctx, getActiveTickers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetActiveTickersRow
+	for rows.Next() {
+		var i GetActiveTickersRow
+		if err := rows.Scan(
+			&i.StartAt,
+			&i.EndAt,
+			&i.Category,
+			&i.Info,
 		); err != nil {
 			return nil, err
 		}

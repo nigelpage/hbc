@@ -13,6 +13,6 @@ sql:
       managed: true
     gen:
       go:
-        package: "dbstore"
+        package: "db"
         out: "./"
         sql_package: "pgx/v5"
