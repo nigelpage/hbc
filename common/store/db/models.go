@@ -15,8 +15,8 @@ type Competition struct {
 	BowlslinkID    pgtype.Text
 	BowlersPerTeam int32
 	TeamsPerSide   int32
-	CreatedAt      pgtype.Timestamp
-	UpdatedAt      pgtype.Timestamp
+	CreatedAt      pgtype.Timestamptz
+	UpdatedAt      pgtype.Timestamptz
 }
 
 type Member struct {
@@ -27,9 +27,10 @@ type Member struct {
 	Phone            pgtype.Text
 	IsBowlingMember  pgtype.Bool
 	IsLifeMember     pgtype.Bool
+	IsFinancial      pgtype.Bool
 	IsActive         pgtype.Bool
-	CreatedAt        pgtype.Timestamp
-	UpdatedAt        pgtype.Timestamp
+	CreatedAt        pgtype.Timestamptz
+	UpdatedAt        pgtype.Timestamptz
 }
 
 type Round struct {
@@ -45,8 +46,8 @@ type Round struct {
 	Surface           string
 	LowRinkNumber     pgtype.Int4
 	HighRinkNumber    pgtype.Int4
-	CreatedAt         pgtype.Timestamp
-	UpdatedAt         pgtype.Timestamp
+	CreatedAt         pgtype.Timestamptz
+	UpdatedAt         pgtype.Timestamptz
 }
 
 type Side struct {
@@ -57,8 +58,8 @@ type Side struct {
 	Team3ID       pgtype.Int4
 	Team4ID       pgtype.Int4
 	Points        int32
-	CreatedAt     pgtype.Timestamp
-	UpdatedAt     pgtype.Timestamp
+	CreatedAt     pgtype.Timestamptz
+	UpdatedAt     pgtype.Timestamptz
 }
 
 type Team struct {
@@ -72,8 +73,8 @@ type Team struct {
 	RoleSkip     int32
 	ShotsFor     pgtype.Int4
 	ShotsAgainst pgtype.Int4
-	CreatedAt    pgtype.Timestamp
-	UpdatedAt    pgtype.Timestamp
+	CreatedAt    pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
 }
 
 type TickerCategory struct {

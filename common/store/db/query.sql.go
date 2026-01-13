@@ -54,9 +54,11 @@ INSERT INTO members (membership_number,
                      email,
                      phone,
                      is_bowling_member,
-                     is_life_member)
-VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at
+                     is_life_member,
+                     is_financial,
+                     is_active)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at
 `
 
 type CreateMemberParams struct {
@@ -67,6 +69,8 @@ type CreateMemberParams struct {
 	Phone            pgtype.Text
 	IsBowlingMember  pgtype.Bool
 	IsLifeMember     pgtype.Bool
+	IsFinancial      pgtype.Bool
+	IsActive         pgtype.Bool
 }
 
 func (q *Queries) CreateMember(ctx context.Context, arg CreateMemberParams) (Member, error) {
@@ -78,6 +82,8 @@ func (q *Queries) CreateMember(ctx context.Context, arg CreateMemberParams) (Mem
 		arg.Phone,
 		arg.IsBowlingMember,
 		arg.IsLifeMember,
+		arg.IsFinancial,
+		arg.IsActive,
 	)
 	var i Member
 	err := row.Scan(
@@ -88,6 +94,7 @@ func (q *Queries) CreateMember(ctx context.Context, arg CreateMemberParams) (Mem
 		&i.Phone,
 		&i.IsBowlingMember,
 		&i.IsLifeMember,
+		&i.IsFinancial,
 		&i.IsActive,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -106,10 +113,343 @@ func (q *Queries) DeactivateMember(ctx context.Context, membershipNumber int32) 
 	return err
 }
 
-const findMembersByName = `-- name: FindMembersByName :many
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
+const findActiveFinancialBowlingMembers = `-- name: FindActiveFinancialBowlingMembers :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE is_bowling_member = TRUE AND is_active = TRUE AND is_financial = TRUE
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindActiveFinancialBowlingMembers(ctx context.Context) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findActiveFinancialBowlingMembers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findActiveFinancialMembers = `-- name: FindActiveFinancialMembers :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE is_active = TRUE AND is_financial = TRUE
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindActiveFinancialMembers(ctx context.Context) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findActiveFinancialMembers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findActiveFinancialMembersByName = `-- name: FindActiveFinancialMembersByName :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE (first_name ILIKE '%' || $1 || '%' OR last_name ILIKE '%' || $1 || '%')
+AND is_active = TRUE AND is_financial = TRUE
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindActiveFinancialMembersByName(ctx context.Context, dollar_1 pgtype.Text) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findActiveFinancialMembersByName, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findActiveMembersByName = `-- name: FindActiveMembersByName :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
 WHERE (first_name ILIKE '%' || $1 || '%' OR last_name ILIKE '%' || $1 || '%')
 AND is_active = TRUE
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindActiveMembersByName(ctx context.Context, dollar_1 pgtype.Text) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findActiveMembersByName, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findActiveTickers = `-- name: FindActiveTickers :many
+SELECT m.start_at AS start_at,
+       m.end_at AS end_at,
+       c.title AS category,
+       m.info AS info
+FROM ticker_messages m
+INNER JOIN ticker_categories c ON m.category_id = c.id
+WHERE m.start_at <= now() AND m.end_at > now()
+ORDER BY m.start_at
+`
+
+type FindActiveTickersRow struct {
+	StartAt  pgtype.Timestamptz
+	EndAt    pgtype.Timestamptz
+	Category pgtype.Text
+	Info     pgtype.Text
+}
+
+func (q *Queries) FindActiveTickers(ctx context.Context) ([]FindActiveTickersRow, error) {
+	rows, err := q.db.Query(ctx, findActiveTickers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FindActiveTickersRow
+	for rows.Next() {
+		var i FindActiveTickersRow
+		if err := rows.Scan(
+			&i.StartAt,
+			&i.EndAt,
+			&i.Category,
+			&i.Info,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findInactiveMembers = `-- name: FindInactiveMembers :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE is_active = FALSE
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindInactiveMembers(ctx context.Context) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findInactiveMembers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findLifeMembers = `-- name: FindLifeMembers :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE is_life_member = TRUE AND is_active = TRUE
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindLifeMembers(ctx context.Context) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findLifeMembers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findMemberById = `-- name: FindMemberById :one
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE membership_number = $1 AND is_active = TRUE
+`
+
+func (q *Queries) FindMemberById(ctx context.Context, membershipNumber int32) (Member, error) {
+	row := q.db.QueryRow(ctx, findMemberById, membershipNumber)
+	var i Member
+	err := row.Scan(
+		&i.MembershipNumber,
+		&i.FirstName,
+		&i.LastName,
+		&i.Email,
+		&i.Phone,
+		&i.IsBowlingMember,
+		&i.IsLifeMember,
+		&i.IsFinancial,
+		&i.IsActive,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findMembers = `-- name: FindMembers :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+ORDER BY last_name, first_name
+`
+
+func (q *Queries) FindMembers(ctx context.Context) ([]Member, error) {
+	rows, err := q.db.Query(ctx, findMembers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Member
+	for rows.Next() {
+		var i Member
+		if err := rows.Scan(
+			&i.MembershipNumber,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.IsBowlingMember,
+			&i.IsLifeMember,
+			&i.IsFinancial,
+			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findMembersByName = `-- name: FindMembersByName :many
+SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_financial, is_active, created_at, updated_at FROM members
+WHERE (first_name ILIKE '%' || $1 || '%' OR last_name ILIKE '%' || $1 || '%')
 ORDER BY last_name, first_name
 `
 
@@ -130,220 +470,7 @@ func (q *Queries) FindMembersByName(ctx context.Context, dollar_1 pgtype.Text) (
 			&i.Phone,
 			&i.IsBowlingMember,
 			&i.IsLifeMember,
-			&i.IsActive,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getActiveTickers = `-- name: GetActiveTickers :many
-SELECT m.start_at AS start_at,
-       m.end_at AS end_at,
-       c.title AS category,
-       m.info AS info
-FROM ticker_messages m
-INNER JOIN ticker_categories c ON m.category_id = c.id
-WHERE m.start_at <= now() AND m.end_at > now()
-ORDER BY m.start_at
-`
-
-type GetActiveTickersRow struct {
-	StartAt  pgtype.Timestamptz
-	EndAt    pgtype.Timestamptz
-	Category pgtype.Text
-	Info     pgtype.Text
-}
-
-func (q *Queries) GetActiveTickers(ctx context.Context) ([]GetActiveTickersRow, error) {
-	rows, err := q.db.Query(ctx, getActiveTickers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetActiveTickersRow
-	for rows.Next() {
-		var i GetActiveTickersRow
-		if err := rows.Scan(
-			&i.StartAt,
-			&i.EndAt,
-			&i.Category,
-			&i.Info,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getBowlingMembers = `-- name: GetBowlingMembers :many
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
-WHERE is_bowling_member = TRUE AND is_active = TRUE
-ORDER BY last_name, first_name
-`
-
-func (q *Queries) GetBowlingMembers(ctx context.Context) ([]Member, error) {
-	rows, err := q.db.Query(ctx, getBowlingMembers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Member
-	for rows.Next() {
-		var i Member
-		if err := rows.Scan(
-			&i.MembershipNumber,
-			&i.FirstName,
-			&i.LastName,
-			&i.Email,
-			&i.Phone,
-			&i.IsBowlingMember,
-			&i.IsLifeMember,
-			&i.IsActive,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getInactiveMembers = `-- name: GetInactiveMembers :many
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
-WHERE is_active = FALSE
-ORDER BY last_name, first_name
-`
-
-func (q *Queries) GetInactiveMembers(ctx context.Context) ([]Member, error) {
-	rows, err := q.db.Query(ctx, getInactiveMembers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Member
-	for rows.Next() {
-		var i Member
-		if err := rows.Scan(
-			&i.MembershipNumber,
-			&i.FirstName,
-			&i.LastName,
-			&i.Email,
-			&i.Phone,
-			&i.IsBowlingMember,
-			&i.IsLifeMember,
-			&i.IsActive,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getLifeMembers = `-- name: GetLifeMembers :many
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
-WHERE is_life_member = TRUE AND is_active = TRUE
-ORDER BY last_name, first_name
-`
-
-func (q *Queries) GetLifeMembers(ctx context.Context) ([]Member, error) {
-	rows, err := q.db.Query(ctx, getLifeMembers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Member
-	for rows.Next() {
-		var i Member
-		if err := rows.Scan(
-			&i.MembershipNumber,
-			&i.FirstName,
-			&i.LastName,
-			&i.Email,
-			&i.Phone,
-			&i.IsBowlingMember,
-			&i.IsLifeMember,
-			&i.IsActive,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getMemberById = `-- name: GetMemberById :one
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
-WHERE membership_number = $1 AND is_active = TRUE
-`
-
-func (q *Queries) GetMemberById(ctx context.Context, membershipNumber int32) (Member, error) {
-	row := q.db.QueryRow(ctx, getMemberById, membershipNumber)
-	var i Member
-	err := row.Scan(
-		&i.MembershipNumber,
-		&i.FirstName,
-		&i.LastName,
-		&i.Email,
-		&i.Phone,
-		&i.IsBowlingMember,
-		&i.IsLifeMember,
-		&i.IsActive,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getMembers = `-- name: GetMembers :many
-SELECT membership_number, first_name, last_name, email, phone, is_bowling_member, is_life_member, is_active, created_at, updated_at FROM members
-WHERE is_active = TRUE
-ORDER BY last_name, first_name
-`
-
-func (q *Queries) GetMembers(ctx context.Context) ([]Member, error) {
-	rows, err := q.db.Query(ctx, getMembers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Member
-	for rows.Next() {
-		var i Member
-		if err := rows.Scan(
-			&i.MembershipNumber,
-			&i.FirstName,
-			&i.LastName,
-			&i.Email,
-			&i.Phone,
-			&i.IsBowlingMember,
-			&i.IsLifeMember,
+			&i.IsFinancial,
 			&i.IsActive,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -369,51 +496,43 @@ func (q *Queries) ReactivateMember(ctx context.Context, membershipNumber int32) 
 	return err
 }
 
-const updateMemberEmail = `-- name: UpdateMemberEmail :exec
+const updateMemberDetails = `-- name: UpdateMemberDetails :exec
 UPDATE members
-SET email = $2, updated_at = CURRENT_TIMESTAMP
+SET first_name = $2,
+    last_name = $3,
+    email = $4,
+    phone = $5,
+    is_bowling_member = $6,
+    is_life_member = $7,
+    is_financial = $8,
+    is_active = $9,
+    updated_at = CURRENT_TIMESTAMP
 WHERE membership_number = $1
 `
 
-type UpdateMemberEmailParams struct {
+type UpdateMemberDetailsParams struct {
 	MembershipNumber int32
+	FirstName        string
+	LastName         string
 	Email            pgtype.Text
-}
-
-func (q *Queries) UpdateMemberEmail(ctx context.Context, arg UpdateMemberEmailParams) error {
-	_, err := q.db.Exec(ctx, updateMemberEmail, arg.MembershipNumber, arg.Email)
-	return err
-}
-
-const updateMemberPhone = `-- name: UpdateMemberPhone :exec
-UPDATE members
-SET phone = $2, updated_at = CURRENT_TIMESTAMP
-WHERE membership_number = $1
-`
-
-type UpdateMemberPhoneParams struct {
-	MembershipNumber int32
 	Phone            pgtype.Text
-}
-
-func (q *Queries) UpdateMemberPhone(ctx context.Context, arg UpdateMemberPhoneParams) error {
-	_, err := q.db.Exec(ctx, updateMemberPhone, arg.MembershipNumber, arg.Phone)
-	return err
-}
-
-const updateMembershipType = `-- name: UpdateMembershipType :exec
-UPDATE members
-SET is_bowling_member = $2, is_life_member = $3, updated_at = CURRENT_TIMESTAMP
-WHERE membership_number = $1
-`
-
-type UpdateMembershipTypeParams struct {
-	MembershipNumber int32
 	IsBowlingMember  pgtype.Bool
 	IsLifeMember     pgtype.Bool
+	IsFinancial      pgtype.Bool
+	IsActive         pgtype.Bool
 }
 
-func (q *Queries) UpdateMembershipType(ctx context.Context, arg UpdateMembershipTypeParams) error {
-	_, err := q.db.Exec(ctx, updateMembershipType, arg.MembershipNumber, arg.IsBowlingMember, arg.IsLifeMember)
+func (q *Queries) UpdateMemberDetails(ctx context.Context, arg UpdateMemberDetailsParams) error {
+	_, err := q.db.Exec(ctx, updateMemberDetails,
+		arg.MembershipNumber,
+		arg.FirstName,
+		arg.LastName,
+		arg.Email,
+		arg.Phone,
+		arg.IsBowlingMember,
+		arg.IsLifeMember,
+		arg.IsFinancial,
+		arg.IsActive,
+	)
 	return err
 }

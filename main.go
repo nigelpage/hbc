@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"strings"
+	"bufio"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -41,14 +44,58 @@ func registerHandlers(hdlrs []*common.Handler, app *echo.Echo) error {
 	return nil
 }
 
+func LoadEnvironmentVariables(filename string) error {
+	// Setup environment variables
+	file, err := os.Open(filename)
+	if err != nil {
+		return fmt.Errorf("Failed to open environment variables file %w", err)
+	}
+	defer file.Close()
+
+    // Create a new scanner to read the file line by line
+    scanner := bufio.NewScanner(file)
+
+    // Loop through the file and read each line
+   for scanner.Scan() {
+        line := scanner.Text() // Get the line as a string
+		if strings.HasPrefix(line, "export ") {
+			eVar := strings.Split(strings.TrimPrefix(line, "export "), "=")
+			if len(eVar) != 2 {
+				return fmt.Errorf("Invalid export value in environment variables file")
+			}
+			fmt.Printf("%s=%s\n", eVar[0], eVar[1])
+			os.Setenv(eVar[0], eVar[1])
+		}
+    }
+
+    // Check for errors during the scan
+    if err := scanner.Err(); err != nil {
+		return fmt.Errorf("Error reading environment variables file %w", err)
+    }
+
+	return nil
+}
+
+func pluraliseIfNotOne(val int) string {
+	if val == 1 {
+		return ""
+	}
+	return "s"
+}
+
 func main() {
 	// Initialise database connection
-	// Forces use of environment variables DBNAME, PGUSER and PGPASSWORD
-	connString := ""
 
+	// Load environment variables from script file
+	err := LoadEnvironmentVariables("./common/store/db/sqlc_cloud.sh")
+	if err != nil {
+		panic(err)
+	}
+
+	// Empty connection string forces use of environment variables
 	ctx := context.Background();
 
-	dbPool, err := pgxpool.New(ctx, connString)
+	dbPool, err := pgxpool.New(ctx, "")
 	if err != nil {
 		panic("Unable to create connection pool")
 	}
@@ -59,7 +106,8 @@ func main() {
 	// err = migrateFromJsonToDB(app.Pool, app.Queries)
 
 	results, err := excel.UploadMembers(ctx, dbPool, "./common/store/excel/Members Draw list 02.01.2026.xlsx")
-	fmt.Printf("%v", results) // ** Temporary
+	fmt.Printf("%d member%s added, %d member%s updated\n", results.Added, pluraliseIfNotOne(results.Added),
+														   results.Updated, pluraliseIfNotOne(results.Updated)) // ** Temporary
 
 	// Initialise app
 	app := common.NewApp(echo.New())
