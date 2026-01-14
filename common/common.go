@@ -69,3 +69,10 @@ func (ti *TickerItem) GetCategory() string {
 func (ti *TickerItem) GetMessage() string {
 	return ti.message
 }
+
+func PluraliseIfNotOne(val int) string {
+	if val == 1 {
+		return ""
+	}
+	return "s"
+}

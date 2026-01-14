@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/xuri/excelize/v2"
 
+	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/common/store/db"
 )
 
@@ -232,7 +233,8 @@ func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string
 
 	// Load all the members from the spreadsheet and validate them
 	membersInSpreadsheet, err := validateMembers(spreadsheet)
-	fmt.Printf("%d members in uploaded spreadsheet\n", len(membersInSpreadsheet))
+	fmt.Printf("%d member%s in uploaded spreadsheet\n", len(membersInSpreadsheet),
+														common.PluraliseIfNotOne(len(membersInSpreadsheet)))
 
 	// Now see what needs updating
 	q := db.New(dbPool)

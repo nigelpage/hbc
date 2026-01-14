@@ -77,13 +77,6 @@ func LoadEnvironmentVariables(filename string) error {
 	return nil
 }
 
-func pluraliseIfNotOne(val int) string {
-	if val == 1 {
-		return ""
-	}
-	return "s"
-}
-
 func main() {
 	// Initialise database connection
 
@@ -111,9 +104,9 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("%d member%s added, %d member%s updated, %d member%s deactivated\n",
-										results.Added, pluraliseIfNotOne(results.Added),
-										results.Updated, pluraliseIfNotOne(results.Updated),
-										results.Deactivated, pluraliseIfNotOne(results.Deactivated))
+										results.Added, common.PluraliseIfNotOne(results.Added),
+										results.Updated, common.PluraliseIfNotOne(results.Updated),
+										results.Deactivated, common.PluraliseIfNotOne(results.Deactivated))
 
 	// Initialise app
 	app := common.NewApp(echo.New())
