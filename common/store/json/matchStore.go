@@ -1,4 +1,4 @@
-package store
+package json
 
 type MatchStore struct {
 	Matches []Match `json:"matches"`

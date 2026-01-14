@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	storeJSON "github.com/nigelpage/hbc/common/store/json"
+	storejson "github.com/nigelpage/hbc/common/store/json"
 	"strings"
 )
 
@@ -166,7 +166,7 @@ func UnlockedEdit(icons TemplateIcons) templ.Component {
 	})
 }
 
-func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
+func generateMatch(m storejson.Match, icons TemplateIcons) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -344,13 +344,13 @@ func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if storeJSON.HasResults(m.Side.Teams) {
+		if storejson.HasResults(m.Side.Teams) {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<article class=\"sideResult\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
-			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(storeJSON.GetSideWinDrawLoss(m.Side.Teams))
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(storejson.GetSideWinDrawLoss(m.Side.Teams))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages.templ`, Line: 131, Col: 86}
 			}
@@ -363,7 +363,7 @@ func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var16 string
-			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(storeJSON.CalculateSidePointsFor(m.Side.Teams))
+			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(storejson.CalculateSidePointsFor(m.Side.Teams))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages.templ`, Line: 132, Col: 67}
 			}
@@ -376,7 +376,7 @@ func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var17 string
-			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(storeJSON.CalculateSidePointsAgainst(m.Side.Teams))
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(storejson.CalculateSidePointsAgainst(m.Side.Teams))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages.templ`, Line: 134, Col: 71}
 			}
@@ -389,7 +389,7 @@ func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var18 string
-			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(storeJSON.CalculateSidePoints(m.Side.Teams))
+			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(storejson.CalculateSidePoints(m.Side.Teams))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages.templ`, Line: 136, Col: 83}
 			}
@@ -526,13 +526,13 @@ func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			if storeJSON.HasResults(m.Side.Teams) {
+			if storejson.HasResults(m.Side.Teams) {
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<div class=\"result\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var27 string
-				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(storeJSON.GetTeamWinDrawLoss(t))
+				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(storejson.GetTeamWinDrawLoss(t))
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages.templ`, Line: 166, Col: 71}
 				}
@@ -584,7 +584,7 @@ func generateMatch(m storeJSON.Match, icons TemplateIcons) templ.Component {
 	})
 }
 
-func GenerateMatches(matchStore storeJSON.MatchStore, icons TemplateIcons) templ.Component {
+func GenerateMatches(matchStore storejson.MatchStore, icons TemplateIcons) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

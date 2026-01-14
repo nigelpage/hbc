@@ -2,7 +2,7 @@ package templates
 
 import (
   "strings"
-	storeJSON "github.com/nigelpage/hbc/store/json"
+	storejson "github.com/nigelpage/hbc/common/store/json"
 )
 
 templ BaseLayout(formatMatches templ.Component, icons TemplateIcons) {
@@ -89,7 +89,7 @@ templ UnlockedEdit(icons TemplateIcons) {
     </div>
 }
 
-templ generateMatch(m storeJSON.Match, icons TemplateIcons) {
+templ generateMatch(m storejson.Match, icons TemplateIcons) {
         <section class="match">
           <section class="competition">
           <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
@@ -127,13 +127,13 @@ templ generateMatch(m storeJSON.Match, icons TemplateIcons) {
 
         <section class="side">
           <section class="sideHeader">
-            if storeJSON.HasResults(m.Side.Teams) {
-              <article class="sideResult" { storeJSON.GetSideWinDrawLoss(m.Side.Teams) }>
-                <p>{ storeJSON.CalculateSidePointsFor(m.Side.Teams) }</p> 
+            if storejson.HasResults(m.Side.Teams) {
+              <article class="sideResult" { storejson.GetSideWinDrawLoss(m.Side.Teams) }>
+                <p>{ storejson.CalculateSidePointsFor(m.Side.Teams) }</p> 
                 <p>:</p>
-                <p>{ storeJSON.CalculateSidePointsAgainst(m.Side.Teams) }</p>
+                <p>{ storejson.CalculateSidePointsAgainst(m.Side.Teams) }</p>
                 <p class="sidePoints"> - </p>
-                <p class="sidePoints">{ storeJSON.CalculateSidePoints(m.Side.Teams) } points</p>
+                <p class="sidePoints">{ storejson.CalculateSidePoints(m.Side.Teams) } points</p>
               </article>
             } else {
               <article></article>
@@ -162,8 +162,8 @@ templ generateMatch(m storeJSON.Match, icons TemplateIcons) {
                     <p class="name">{ b.Name }</p>
                   </div>
                 }
-                if storeJSON.HasResults(m.Side.Teams) {
-                  <div class="result" { storeJSON.GetTeamWinDrawLoss(t) }>
+                if storejson.HasResults(m.Side.Teams) {
+                  <div class="result" { storejson.GetTeamWinDrawLoss(t) }>
                     <p> { t.Shots.For }</p>
                     <p>:</p>
                     <p>{ t.Shots.Against }</p>
@@ -177,7 +177,7 @@ templ generateMatch(m storeJSON.Match, icons TemplateIcons) {
       </section>
 }
 
-templ GenerateMatches(matchStore storeJSON.MatchStore, icons TemplateIcons) {
+templ GenerateMatches(matchStore storejson.MatchStore, icons TemplateIcons) {
     for _, m := range matchStore.Matches {
       @generateMatch(m, icons)
   }

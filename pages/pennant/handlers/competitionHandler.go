@@ -11,22 +11,22 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/pages/pennant/templates"
-	store "github.com/nigelpage/hbc/common/store/json"
+	jsonstore "github.com/nigelpage/hbc/common/store/json"
 )
 
-func getStoredMatches(comp string) store.MatchStore {
+func getStoredMatches(comp string) jsonstore.MatchStore {
 	// Placeholder function to simulate fetching stored matches
 	pennantCompetitionStore := fmt.Sprintf("./store/json/%s20251108.json", string(comp[0]))
 	jsonFile, err := os.Open(pennantCompetitionStore)
 	if err != nil {
 		fmt.Println("Error opening JSON file:", err)
-		return store.MatchStore{}
+		return jsonstore.MatchStore{}
 	}
 	defer jsonFile.Close()
 
 	byteValue, _ := io.ReadAll(jsonFile)
 
-	var matchStore store.MatchStore
+	var matchStore jsonstore.MatchStore
 	json.Unmarshal(byteValue, &matchStore)
 
 	return matchStore
