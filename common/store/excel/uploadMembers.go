@@ -159,7 +159,7 @@ ss, err := excelize.OpenFile(spreadsheet)
 				mbr.is_bowling_member = false
 			}
 
-			if strings.EqualFold(strings.TrimSpace(rows[i][isFinancialIndex]), "Not Paid") {
+			if !strings.EqualFold(strings.TrimSpace(rows[i][isFinancialIndex]), "Not Paid") {
 				mbr.is_financial = true
 			} else {
 				mbr.is_financial = false
@@ -191,7 +191,7 @@ func convertSSMemberToDBMember(ssmbr member, at time.Time, isNew bool) *db.Membe
 			IsBowlingMember: db.ConvertBoolToPGBool(ssmbr.is_bowling_member),
 			IsLifeMember: db.ConvertBoolToPGBool(ssmbr.is_life_member),
 			IsFinancial: db.ConvertBoolToPGBool(ssmbr.is_financial),
-			UpdatedAt: db.ConvertTimeToPGTimestamptz(at),
+			IsActive: db.ConvertBoolToPGBool(true),
 		}
 	if isNew {
 		mbr.CreatedAt = db.ConvertTimeToPGTimestamptz(at)
@@ -228,6 +228,7 @@ func convertMemberToUpdateMemberDetailsParams(mbr *db.Member) db.UpdateMemberDet
 }
 
 func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string) (*UpdateMembersResult, error) {
+	start := time.Now()	
 
 	// Load all the members from the spreadsheet and validate them
 	membersInSpreadsheet, err := validateMembers(spreadsheet)
@@ -339,6 +340,10 @@ func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string
 	}
 
 	tx.Commit(ctx)
+
+	elapsed := time.Since(start)
+	fmt.Printf("Upload from spreadsheet to database took %s\n", elapsed)
+
 
 	return &UpdateMembersResult { Added: len(added),
 								  Updated: len(updated),
