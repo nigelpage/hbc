@@ -7,6 +7,7 @@ import (
 	"strings"
 	"bufio"
 
+
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/labstack/echo/v4"
@@ -105,9 +106,14 @@ func main() {
 	// Migrate from Json to database
 	// err = migrateFromJsonToDB(app.Pool, app.Queries)
 
-	results, err := excel.UploadMembers(ctx, dbPool, "./common/store/excel/Members Draw list 02.01.2026.xlsx")
-	fmt.Printf("%d member%s added, %d member%s updated\n", results.Added, pluraliseIfNotOne(results.Added),
-														   results.Updated, pluraliseIfNotOne(results.Updated)) // ** Temporary
+	results, err := excel.UploadMembers(ctx, dbPool, "./common/store/excel/Members Draw list 09.01.2026.xlsx")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%d member%s added, %d member%s updated, %d member%s deactivated\n",
+										results.Added, pluraliseIfNotOne(results.Added),
+										results.Updated, pluraliseIfNotOne(results.Updated),
+										results.Deactivated, pluraliseIfNotOne(results.Deactivated))
 
 	// Initialise app
 	app := common.NewApp(echo.New())

@@ -3,6 +3,7 @@ package excel
 import (
 	"context"
 	"fmt"
+	"net/mail"
 	"strconv"
 	"strings"
 	"time"
@@ -22,6 +23,7 @@ type MemberBase struct {
 type UpdateMembersResult struct {
 	Added int
 	Updated int
+	Deactivated int
 }
 
 type member struct {
@@ -36,7 +38,7 @@ type member struct {
 }
 
 // Extract all the members from the spreadsheet and validate them
-func validateMembers(spreadsheet string) ([]member, error) {
+func validateMembers(spreadsheet string) (map[int]member, error) {
 ss, err := excelize.OpenFile(spreadsheet)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to open spreadsheet '%s' %w", spreadsheet, err)
@@ -44,7 +46,7 @@ ss, err := excelize.OpenFile(spreadsheet)
 
 	defer ss.Close()
 
-	membersInSpreadsheet := []member{}
+	membersInSpreadsheet := make(map[int]member)
 
 	// Sheets and required columns needed in spreadsheet
 	
@@ -106,7 +108,7 @@ ss, err := excelize.OpenFile(spreadsheet)
 	// Validation successful!
 	// All sheets with required columns are present
 
-	// Extract the member details from the spreadsheet
+	// Now extract the member details from the spreadsheet
 
 	for sheet, fields := range sheets {
 		rows, _ := ss.GetRows(sheet)
@@ -125,12 +127,22 @@ ss, err := excelize.OpenFile(spreadsheet)
 				return nil, fmt.Errorf("Invalid card number for '%s %s'", rows[i][firstNameIndex], rows[i][lastNameIndex])
 			}
 
+			// Validate the email address if provided
+			email := rows[i][emailIndex]
+			if len(email) > 0 {
+				_, err = mail.ParseAddress(email)
+				if err != nil {
+					return nil, fmt.Errorf("Invalid email address for '%s %s' - %s",
+											rows[i][firstNameIndex], rows[i][lastNameIndex], email)
+				}
+			}
+
 			// Save the member info required
 			mbr := member {
 				card_id: cardNo,
 				first_name: rows[i][firstNameIndex],
 				last_name: rows[i][lastNameIndex],
-				email_address: rows[i][emailIndex],
+				email_address: email,
 				phone_number: rows[i][phoneIndex],
 			}
 
@@ -153,8 +165,14 @@ ss, err := excelize.OpenFile(spreadsheet)
 				mbr.is_financial = false
 			}
 
+			// Check for duplicate card number
+			_, ok := membersInSpreadsheet[mbr.card_id]
+			if ok {
+				return nil, fmt.Errorf("Dulpicate member in spreadsheet with card# %d", mbr.card_id)
+			}
+
 			// Append member to list of members in spreadsheet
-			membersInSpreadsheet = append(membersInSpreadsheet, mbr)
+			membersInSpreadsheet[mbr.card_id] = mbr
 		}
 	}
 
@@ -181,8 +199,8 @@ func convertSSMemberToDBMember(ssmbr member, at time.Time, isNew bool) *db.Membe
 	return &mbr
 }
 
-func convertMemberToCreateMemberParams(mbr db.Member) *db.CreateMemberParams {
-	return &db.CreateMemberParams {
+func convertMemberToCreateMemberParams(mbr *db.Member) db.CreateMemberParams {
+	return db.CreateMemberParams {
 		MembershipNumber: mbr.MembershipNumber,
 		FirstName: mbr.FirstName,
 		LastName: mbr.LastName,
@@ -195,8 +213,8 @@ func convertMemberToCreateMemberParams(mbr db.Member) *db.CreateMemberParams {
 	}
 }
 
-func convertMemberToUpdateMemberDetailsParams(mbr db.Member) *db.UpdateMemberDetailsParams {
-	return &db.UpdateMemberDetailsParams {
+func convertMemberToUpdateMemberDetailsParams(mbr *db.Member) db.UpdateMemberDetailsParams {
+	return db.UpdateMemberDetailsParams {
 		MembershipNumber: mbr.MembershipNumber,
 		FirstName: mbr.FirstName,
 		LastName: mbr.LastName,
@@ -211,28 +229,34 @@ func convertMemberToUpdateMemberDetailsParams(mbr db.Member) *db.UpdateMemberDet
 
 func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string) (*UpdateMembersResult, error) {
 
+	// Load all the members from the spreadsheet and validate them
 	membersInSpreadsheet, err := validateMembers(spreadsheet)
-
-	// Temporary	
 	fmt.Printf("%d members in uploaded spreadsheet\n", len(membersInSpreadsheet))
 
 	// Now see what needs updating
 	q := db.New(dbPool)
 
+	// Load all the members from the database
 	existingMembers, err := q.FindMembers(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to retrieve members from database %w", err)
 	}
 
+	// Now get the members from the database
 	existingMemberCount := 0
+	membersInDatabase := map[int]db.Member {}
 
 	if existingMembers != nil {
+		for _, mbr := range existingMembers {
+			membersInDatabase[int(mbr.MembershipNumber)] = mbr
+		}
 		existingMemberCount = len(existingMembers)
 	}
 	fmt.Printf("%d existing members in database\n", existingMemberCount)
 
-	var added []db.Member
-	var updated []db.Member
+	var added []db.CreateMemberParams
+	var updated []db.UpdateMemberDetailsParams
+	var deactivated []int32
 
 	// Ensure all records have the same timestamp
 	// Makes identifying an upload run much easier!
@@ -242,26 +266,36 @@ func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string
 	if existingMemberCount == 0 {
 		for _, uploadedMbr := range membersInSpreadsheet {
 			mbrFromUpload := convertSSMemberToDBMember(uploadedMbr, now, true)
-			added = append(added, *mbrFromUpload)
+			added = append(added, convertMemberToCreateMemberParams(mbrFromUpload))
 		}
 	} else {
 		// Check for members that need to be added or updated
 		for _, uploadedMbr := range membersInSpreadsheet {
-		checkIfInDatabaseLoop:
-			for _, mbrInDatabase := range existingMembers {
-				if uploadedMbr.card_id == int(mbrInDatabase.MembershipNumber) {
-					mbrFromUpload := convertSSMemberToDBMember(uploadedMbr, now, false)
-					if !mbrInDatabase.Equal(*mbrFromUpload) {
-							// Member needs to be updated!
-							updated = append(updated, *mbrFromUpload)
-							break checkIfInDatabaseLoop
-					}
-					break checkIfInDatabaseLoop
+
+			// Check to see if the member is already in the database
+			_, isInDatabase := membersInDatabase[uploadedMbr.card_id]
+
+			if isInDatabase {
+				// Member is already in the database, so check to see if anything's changed
+				mbrFromUpload := convertSSMemberToDBMember(uploadedMbr, now, false)
+				if !mbrFromUpload.Equal(membersInDatabase[uploadedMbr.card_id]) {
+					// Something's changed, so schedule the member for update
+					updated = append(updated, convertMemberToUpdateMemberDetailsParams(mbrFromUpload))
 				}
-			}
+			} else {
 			// New member needs to be added!
 			newMember := convertSSMemberToDBMember(uploadedMbr, now, true)		
-			added = append(added, *newMember)
+			added = append(added, convertMemberToCreateMemberParams(newMember))
+			}
+		}
+
+		// Check for members that need to be deactivated
+		for id, mbr := range membersInDatabase {
+			_, isInSpreadsheet := membersInSpreadsheet[int(mbr.MembershipNumber)]
+			if !isInSpreadsheet && mbr.IsActive.Bool {
+				// Member is in database and active but not in spreadsheet, so mark for deactivation
+				deactivated = append(deactivated, int32(id))
+			}
 		}
 	}
 
@@ -277,7 +311,7 @@ func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string
 	// Add new members
 	if len(added) > 0 {
 		for _, mbr := range added {
-			_, err := q.CreateMember(ctx, *convertMemberToCreateMemberParams(mbr))
+			_, err := q.CreateMember(ctx, mbr)
 			if err != nil {
 				return nil, fmt.Errorf("Failed to add new member '%s %s' %w", mbr.FirstName, mbr.LastName, err)
 			}
@@ -285,17 +319,28 @@ func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string
 	}
 
 	// Update members with changed details
-
 	if len(updated) > 0 {
 		for _, mbr := range updated {
-			err := q.UpdateMemberDetails(ctx, *convertMemberToUpdateMemberDetailsParams(mbr))
+			err := q.UpdateMemberDetails(ctx, mbr)
 			if err != nil {
 				return nil, fmt.Errorf("Failed to update member '%s %s' %w", mbr.FirstName, mbr.LastName, err)
 			}
 		}
 	}
 
+	// Deactivate members who have left the club or not paid
+	if (len(deactivated) > 0) {
+		for _, mbrId := range deactivated {
+			err := q.DeactivateMember(ctx, int32(mbrId))
+			if err != nil {
+				return nil, fmt.Errorf("Failed to deactivate member with card # %d\n%w", mbrId, err)
+			}
+		}
+	}
+
 	tx.Commit(ctx)
 
-	return &UpdateMembersResult { Added: len(added), Updated: len(updated)}, nil
+	return &UpdateMembersResult { Added: len(added),
+								  Updated: len(updated),
+								  Deactivated: len(deactivated)}, nil
 }
