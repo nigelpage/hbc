@@ -1,12 +1,15 @@
 package admin
 
 import (
+	"net/http"
+
 	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/pages/admin/handlers"
 )
 
-func GetHandlers() []*common.Handler {
-	return []*common.Handler{
-		common.NewHandler("/admin", "GET", handlers.AdminHandler),
+func GetHeaderMenusAndHandlers() *[]common.HeaderMenuAndHandler {
+	hmahs := []common.HeaderMenuAndHandler{
+		{Url: "/admin", Text: "admin", Method: http.MethodGet, Handler: handlers.AdminHandler},
 	}
+	return &hmahs
 }

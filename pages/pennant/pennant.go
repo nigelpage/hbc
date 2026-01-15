@@ -1,15 +1,16 @@
 package pennant
 
 import (
+	"net/http"
 	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/pages/pennant/handlers"
 )
 
-func GetHandlers() []*common.Handler {
-	return []*common.Handler{
-		common.NewHandler("/pennant", "GET", handlers.WeekendCompetitionHandler),
-		common.NewHandler("/pennant/:competition", "GET", handlers.CompetitionHandler),
-		common.NewHandler("/pennant/authenticate", "POST", handlers.AuthenticationHandler),
-		common.NewHandler("/pennant/lock", "GET", handlers.LockAuthenticationHandler),
+func GetHeaderMenusAndHandlers() *[]common.HeaderMenuAndHandler {
+	hmahs := []common.HeaderMenuAndHandler{
+		{Url: "/pennant", Text: "pennant", Method: http.MethodGet, Handler: handlers.WeekendCompetitionHandler},
+		{Url: "/pennant/authenticate", Text: "", Method: http.MethodPost, Handler: handlers.AuthenticationHandler},
+		{Url: "/pennant/lock", Text: "", Method: http.MethodGet, Handler: handlers.LockAuthenticationHandler},
 	}
+	return &hmahs
 }

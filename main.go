@@ -1,12 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
 	"strings"
-	"bufio"
-
+	"net/http"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -18,27 +18,27 @@ import (
 	"github.com/nigelpage/hbc/pages/pennant"
 )
 
-func registerHandlers(hdlrs []*common.Handler, app *echo.Echo) error {
+func registerHandlers(hdlrs *[]common.HeaderMenuAndHandler, app *echo.Echo) error {
 	/* Register handlers */
-	for _, h := range hdlrs {
-		switch h.GetVerb() {
-		case "GET":
-			app.GET(h.GetUrlPattern(), h.GetFunction())
-		case "POST":
-			app.POST(h.GetUrlPattern(), h.GetFunction())
-		case "PUT":
-			app.PUT(h.GetUrlPattern(), h.GetFunction())
-		case "DELETE":
-			app.DELETE(h.GetUrlPattern(), h.GetFunction())
-		case "PATCH":
-			app.PATCH(h.GetUrlPattern(), h.GetFunction())
-		case "HEAD":
-			app.HEAD(h.GetUrlPattern(), h.GetFunction())
-		case "OPTIONS":
-			app.OPTIONS(h.GetUrlPattern(), h.GetFunction())
-		// Invalid HTTP verb
+	for _, h := range *hdlrs {
+		switch h.Method {
+		case http.MethodGet:
+			app.GET(h.Url, h.Handler)
+		case http.MethodPost:
+			app.POST(h.Url, h.Handler)
+		case http.MethodPut:
+			app.PUT(h.Url, h.Handler)
+		case http.MethodDelete:
+			app.DELETE(h.Url, h.Handler)
+		case http.MethodPatch:
+			app.PATCH(h.Url, h.Handler)
+		case http.MethodHead:
+			app.HEAD(h.Url, h.Handler)
+		case http.MethodOptions:
+			app.OPTIONS(h.Url, h.Handler)
+		// Invalid HTTP method
 		default:
-			return fmt.Errorf("Invalid HTTP verb specified - %s - for url pattern - %s", h.GetVerb(), h.GetUrlPattern())
+			return fmt.Errorf("Invalid HTTP method specified - %s - for url pattern - %s", h.Method, h.Url)
 		}
 	}
 
@@ -117,14 +117,14 @@ func main() {
 	
 	// Register HTTP handlers
 	// ...for index page
-	err = registerHandlers(index.GetHandlers(), app.Echo)
+	err = registerHandlers(index.GetHeaderMenusAndHandlers(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
 	
 	// ...for pennant page
 
-	err = registerHandlers(pennant.GetHandlers(), app.Echo)
+	err = registerHandlers(pennant.GetHeaderMenusAndHandlers(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}

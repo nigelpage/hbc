@@ -48,15 +48,15 @@ templ BaseLayout(tickerItems []*common.TickerItem) {
           </svg>
         </div>
 
-        <nav class="navbar">
-          <a href="/">home</a>
+        <nav class="navbar" hx-target="#pageBody" hx-headers='{"X-HBC-fromHeader": "True"}'>
+          <a hx-get="/home" >home</a>
           <div class="navbar-dropdown">
             <button class="navbar-dropdown-button">bowls 
               <i class="fa fa-caret-down"></i>
             </button>
             <div class="navbar-dropdown-content">
-              <a href="/pennant">pennant</a>
-              <a href="/membership">membership</a>
+              <a hx-get="/bowls/pennant">pennant</a>
+              <a hx-get="/bowls/membership">membership</a>
             </div>
           </div>
           <div class="navbar-dropdown">
@@ -64,20 +64,20 @@ templ BaseLayout(tickerItems []*common.TickerItem) {
               <i class="fa fa-caret-down"></i>
             </button>
             <div class="navbar-dropdown-content">
-              <a href="/rocketlounge">rocket lounge</a>
-              <a href="/venuehire">venue hire</a>
+              <a hx-get="/functions/rocketlounge">rocket lounge</a>
+              <a hx-get="/functions/venuehire">venue hire</a>
             </div>
           </div>
-          <a href="/sponsors">sponsors</a>
+          <a hx-get="/sponsors">sponsors</a>
           <div class="navbar-dropdown">
             <button class="navbar-dropdown-button">about 
               <i class="fa fa-caret-down"></i>
             </button>
             <div class="navbar-dropdown-content">
-              <a href="/board">board</a>
-              <a href="/codeofconduct">code of conduct</a>
-              <a href="/history">our club</a>
-              <a href="/contactus">contact</a>
+              <a hx-get="/about/board">board</a>
+              <a hx-get="/about/codeofconduct">code of conduct</a>
+              <a hx-get="/about/history">our club</a>
+              <a hx-get="/about/contactus">contact</a>
             </div>
           </div>
         </nav>
