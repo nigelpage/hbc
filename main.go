@@ -13,12 +13,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nigelpage/hbc/common"
-	"github.com/nigelpage/hbc/common/store/excel"
 	"github.com/nigelpage/hbc/pages/index"
 	"github.com/nigelpage/hbc/pages/pennant"
 )
 
-func registerHandlers(hdlrs *[]common.HeaderMenuAndHandler, app *echo.Echo) error {
+func registerHandlers(category string, hdlrs *[]common.HeaderMenuAndHandler, app *echo.Echo) error {
 	/* Register handlers */
 	for _, h := range *hdlrs {
 		switch h.Method {
@@ -41,6 +40,8 @@ func registerHandlers(hdlrs *[]common.HeaderMenuAndHandler, app *echo.Echo) erro
 			return fmt.Errorf("Invalid HTTP method specified - %s - for url pattern - %s", h.Method, h.Url)
 		}
 	}
+	// Store menus and handlers for this category
+	common.HeaderMenusAndHandlers[category] = hdlrs
 
 	return nil
 }
@@ -96,17 +97,8 @@ func main() {
 
 	defer dbPool.Close()
 
-	// Migrate from Json to database
-	// err = migrateFromJsonToDB(app.Pool, app.Queries)
-
-	results, err := excel.UploadMembers(ctx, dbPool, "./common/store/excel/Members Draw list 09.01.2026.xlsx")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%d member%s added, %d member%s updated, %d member%s deactivated\n",
-										results.Added, common.PluraliseIfNotOne(results.Added),
-										results.Updated, common.PluraliseIfNotOne(results.Updated),
-										results.Deactivated, common.PluraliseIfNotOne(results.Deactivated))
+	// N.B. Just used whilst developing
+	whileDev(ctx, dbPool)
 
 	// Initialise app
 	app := common.NewApp(echo.New())
@@ -117,14 +109,14 @@ func main() {
 	
 	// Register HTTP handlers
 	// ...for index page
-	err = registerHandlers(index.GetHeaderMenusAndHandlers(), app.Echo)
+	err = registerHandlers("index", index.GetHeaderMenusAndHandlers(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
 	
 	// ...for pennant page
 
-	err = registerHandlers(pennant.GetHeaderMenusAndHandlers(), app.Echo)
+	err = registerHandlers("pennant", pennant.GetHeaderMenusAndHandlers(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}

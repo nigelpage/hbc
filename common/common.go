@@ -4,10 +4,27 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 )
+
+var HeaderMenusAndHandlers = map[string]*[]HeaderMenuAndHandler{}
+
+// Check to see if the base page is already loaded
+func IsBaseLoaded(ctx echo.Context) (bool, error) {
+	name := "X-HBC-FromHeader"
+	isLoaded := ctx.Request().Header.Get(name)
+	if isLoaded != "" {
+		_, err := strconv.ParseBool(isLoaded)
+		if err != nil {			
+			return false, fmt.Errorf("Invalid value for header '%s' - must be 'true' or 'false', not '%s'", name, isLoaded)
+		}
+		return true, nil
+	}
+	return false, nil
+}
 
 /* Template renderer */
 func TemplateRenderer(ctx echo.Context, statusCode int, cmp templ.Component) error {
@@ -111,7 +128,7 @@ func ValidateHeaderMenusAndHandlers(hmahs []HeaderMenuAndHandler) error {
 }
 
 
-func PluraliseIfNotOne(val int) string {
+func Pluralise(val int) string {
 	if val == 1 {
 		return ""
 	}

@@ -4,7 +4,7 @@ import (
   "github.com/nigelpage/hbc/common"
 )
 
-templ BaseLayout(tickerItems []*common.TickerItem) {
+templ BaseLayout(tickerItems *[]common.TickerItem, menuItems *[]common.HeaderMenusAndHandlers) {
 <!DOCTYPE html>
 <html lang="en">
   <head>

@@ -169,7 +169,7 @@ ss, err := excelize.OpenFile(spreadsheet)
 			// Check for duplicate card number
 			_, ok := membersInSpreadsheet[mbr.card_id]
 			if ok {
-				return nil, fmt.Errorf("Dulpicate member in spreadsheet with card# %d", mbr.card_id)
+				return nil, fmt.Errorf("Duplicate member in spreadsheet with card# %d", mbr.card_id)
 			}
 
 			// Append member to list of members in spreadsheet
@@ -234,7 +234,7 @@ func UploadMembers(ctx context.Context, dbPool *pgxpool.Pool, spreadsheet string
 	// Load all the members from the spreadsheet and validate them
 	membersInSpreadsheet, err := validateMembers(spreadsheet)
 	fmt.Printf("%d member%s in uploaded spreadsheet\n", len(membersInSpreadsheet),
-														common.PluraliseIfNotOne(len(membersInSpreadsheet)))
+														common.Pluralise(len(membersInSpreadsheet)))
 
 	// Now see what needs updating
 	q := db.New(dbPool)
