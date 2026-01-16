@@ -2,8 +2,10 @@ package templates
 
 import (
 	// "fmt"
-	// "strings"
+	//"strings"
 	// "time"
+
+	//"github.com/nigelpage/hbc/common"
 )
 
 type TemplateIcons struct {

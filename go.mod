@@ -7,7 +7,7 @@ tool github.com/a-h/templ/cmd/templ
 require (
 	github.com/a-h/templ v0.3.960
 	github.com/jackc/pgx/v5 v5.8.0
-	github.com/labstack/echo/v4 v4.14.0
+	github.com/labstack/echo/v4 v4.15.0
 	golang.org/x/crypto v0.46.0
 )
 
