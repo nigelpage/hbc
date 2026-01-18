@@ -6,11 +6,11 @@ import (
 	"github.com/nigelpage/hbc/pages/pennant/handlers"
 )
 
-func GetHeaderMenusAndHandlers() *[]common.HeaderMenuAndHandler {
-	hmahs := []common.HeaderMenuAndHandler{
-		{Url: "/pennant", Text: "pennant", Method: http.MethodGet, Handler: handlers.WeekendCompetitionHandler},
-		{Url: "/pennant/authenticate", Text: "", Method: http.MethodPost, Handler: handlers.AuthenticationHandler},
-		{Url: "/pennant/lock", Text: "", Method: http.MethodGet, Handler: handlers.LockAuthenticationHandler},
+func GetHeaderMenus() *[]common.HeaderMenu {
+	hdrMenus := []common.HeaderMenu{
+		*common.NewHeaderMenu("/pennant/:type", "pennant", http.MethodGet, handlers.CompetitionHandler),
+		*common.NewHeaderMenu("/pennant/lock", "", http.MethodGet, handlers.LockAuthenticationHandler),
+		*common.NewHeaderMenu("/pennant/authenticate", "", http.MethodPost, handlers.AuthenticationHandler),
 	}
-	return &hmahs
+	return &hdrMenus
 }

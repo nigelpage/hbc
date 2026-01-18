@@ -4,9 +4,9 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
-	"net/http"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -17,33 +17,36 @@ import (
 	"github.com/nigelpage/hbc/pages/pennant"
 )
 
-func registerHandlers(category string, hdlrs *[]common.HeaderMenuAndHandler, app *echo.Echo) error {
-	/* Register handlers */
-	for _, h := range *hdlrs {
-		switch h.Method {
-		case http.MethodGet:
-			app.GET(h.Url, h.Handler)
-		case http.MethodPost:
-			app.POST(h.Url, h.Handler)
-		case http.MethodPut:
-			app.PUT(h.Url, h.Handler)
-		case http.MethodDelete:
-			app.DELETE(h.Url, h.Handler)
-		case http.MethodPatch:
-			app.PATCH(h.Url, h.Handler)
-		case http.MethodHead:
-			app.HEAD(h.Url, h.Handler)
-		case http.MethodOptions:
-			app.OPTIONS(h.Url, h.Handler)
-		// Invalid HTTP method
-		default:
-			return fmt.Errorf("Invalid HTTP method specified - %s - for url pattern - %s", h.Method, h.Url)
+func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]common.HeaderMenu, app *echo.Echo) (*[]common.HeaderMenu, error) {
+	if (hdrMenus != nil) {
+		for _, menu := range *hdrMenus {
+			url := menu.Url
+			if isSubMenu {
+				url = fmt.Sprintf("/%s%s", category, menu.Url)
+			}
+
+			switch menu.Method {
+				case http.MethodGet:
+					app.GET(url, menu.Handler)
+				case http.MethodPost:
+					app.POST(url, menu.Handler)
+				case http.MethodPut:
+					app.PUT(url, menu.Handler)
+				case http.MethodDelete:
+					app.DELETE(url, menu.Handler)
+				case http.MethodPatch:
+					app.PATCH(url, menu.Handler)
+				case http.MethodHead:
+					app.HEAD(url, menu.Handler)
+				case http.MethodOptions:
+					app.OPTIONS(url, menu.Handler)
+				// Invalid HTTP method
+				default:
+					return nil, fmt.Errorf("Invalid HTTP method specified - %s - for url pattern - %s", menu.Method, url)
+				}
 		}
 	}
-	// Store menus and handlers for this category
-	common.HeaderMenusAndHandlers[category] = hdlrs
-
-	return nil
+	return hdrMenus, nil
 }
 
 func LoadEnvironmentVariables(filename string) error {
@@ -107,19 +110,34 @@ func main() {
 	// Setup a handler for static files (e.g. CSS, JS etc...)
 	app.Echo.Static("/static", "pages")
 	
-	// Register HTTP handlers
-	// ...for index page
-	err = registerHandlers("index", index.GetHeaderMenusAndHandlers(), app.Echo)
-	if err != nil {
-		app.Echo.Logger.Fatal(err)	
-	}
-	
-	// ...for pennant page
+	// Register HTTP handlers and menus
+	var cat string
 
-	err = registerHandlers("pennant", pennant.GetHeaderMenusAndHandlers(), app.Echo)
+	// ...for index page
+	cat = "home"
+	menus, err := registerHeaderMenus(cat, false, index.GetHeaderMenus(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
+
+	// Add to the collection of all menus and handlers
+	common.HeaderMenusAndSubMenus = *menus
+	
+	// ...for bowls pages
+	
+	cat = "bowls"
+	menus, err = registerHeaderMenus(cat, false, nil, nil)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
+	menuContainer := *common.NewHeaderMenu("", cat, "", nil)
+	
+	subMenus, err := registerHeaderMenus(cat, true, pennant.GetHeaderMenus(), app.Echo)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
+	menuContainer.SubMenus = append(menuContainer.SubMenus, *subMenus...)
+	common.HeaderMenusAndSubMenus = append(common.HeaderMenusAndSubMenus, menuContainer)
 
 	// Setup logging middleware
 	app.Echo.Use(middleware.RequestLogger())

@@ -8,10 +8,11 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/common"
-	ct "github.com/nigelpage/hbc/common/templates")
+	"github.com/nigelpage/hbc/common/templates"
+)
 
 func createPageFromTemplate(tickerItems *[]common.TickerItem) templ.Component {
-	return ct.HeaderLayout(tickerItems)
+	return templates.HeaderLayout(tickerItems)
 }
 
 func IndexHandler(ctx echo.Context) error {
