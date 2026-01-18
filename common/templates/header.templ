@@ -58,13 +58,13 @@ templ HeaderLayout(tickerItems *[]common.TickerItem) {
                     <div class="navbar-dropdown-content">                    
                     for _, subMenu := range menu.SubMenus {
                       if subMenu.Text != "" {
-                        <a hx-get="{ url }">{ subMenu.Text }</a>
+                        <a hx-get={ subMenu.Url }>{ subMenu.Text }</a>
                       }
                     }
                     </div>
                   </div>
               } else {
-                      <a hx-get="{ menu.Url }">{ menu.Text }</a>
+                      <a hx-get={ menu.Url }>{ menu.Text }</a>
               }
           }
         </nav>
