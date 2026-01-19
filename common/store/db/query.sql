@@ -3,6 +3,11 @@ INSERT INTO ticker_categories (title)
 VALUES ($1)
 RETURNING *;
 
+-- name: FindTickerCategory :many
+SELECT * FROM ticker_categories
+WHERE title ILIKE '%' || $1 || '%'
+ORDER BY title;
+
 -- name: AddTickerMessage :exec
 INSERT INTO ticker_messages (start_at,
                              end_at,

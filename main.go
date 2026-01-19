@@ -15,6 +15,8 @@ import (
 	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/pages/index"
 	"github.com/nigelpage/hbc/pages/pennant"
+	"github.com/nigelpage/hbc/pages/membership"
+	"github.com/nigelpage/hbc/pages/admin"
 )
 
 func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]common.HeaderMenu, app *echo.Echo) (*[]common.HeaderMenu, error) {
@@ -109,6 +111,7 @@ func main() {
 	
 	// Setup a handler for static files (e.g. CSS, JS etc...)
 	app.Echo.Static("/static", "pages")
+	app.Echo.Static("/common", "common")
 	
 	// Register HTTP handlers and menus
 	var cat string
@@ -132,12 +135,30 @@ func main() {
 	}
 	menuContainer := *common.NewHeaderMenu("", cat, "", nil)
 	
+	// Pennant page
 	subMenus, err := registerHeaderMenus(cat, true, pennant.GetHeaderMenus(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
 	menuContainer.SubMenus = append(menuContainer.SubMenus, *subMenus...)
+
+	// Membership page
+	subMenus, err = registerHeaderMenus(cat, true, membership.GetHeaderMenus(), app.Echo)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
+	menuContainer.SubMenus = append(menuContainer.SubMenus, *subMenus...)
+
+	// Save all the menus
 	common.HeaderMenusAndSubMenus = append(common.HeaderMenusAndSubMenus, menuContainer)
+
+	// Admin page
+	cat = "admin"
+	menus, err = registerHeaderMenus(cat, false, admin.GetHeaderMenus(), app.Echo)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
+	common.HeaderMenusAndSubMenus = append(common.HeaderMenusAndSubMenus, *menus...)
 
 	// Setup logging middleware
 	app.Echo.Use(middleware.RequestLogger())

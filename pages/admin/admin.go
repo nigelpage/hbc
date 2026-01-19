@@ -7,9 +7,9 @@ import (
 	"github.com/nigelpage/hbc/pages/admin/handlers"
 )
 
-func GetHeaderMenusAndHandlers() *[]common.HeaderMenu {
-	hmahs := []common.HeaderMenu {
-		{Url: "/admin", Text: "admin", Method: http.MethodGet, Handler: handlers.AdminHandler},
+func GetHeaderMenus() *[]common.HeaderMenu {
+	hdrMenus := []common.HeaderMenu{
+		*common.NewHeaderMenu("/admin", "admin", http.MethodGet, handlers.AdminHandler),
 	}
-	return &hmahs
+	return &hdrMenus
 }

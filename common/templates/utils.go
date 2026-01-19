@@ -1,11 +1,14 @@
 package templates
 
 import (
-	// "fmt"
-	//"strings"
-	// "time"
+	"fmt"
+	"strconv"
+	"time"
 
-	//"github.com/nigelpage/hbc/common"
+	"github.com/a-h/templ"
+	"github.com/labstack/echo/v4"
+
+	"github.com/nigelpage/hbc/common"
 )
 
 type TemplateIcons struct {
@@ -52,3 +55,57 @@ var Icons = TemplateIcons {
 
 // 	return t.Format(timeDisplayFormat)
 // }
+const ( HeaderPageIndicator = "X-HBC-FromHeader" )
+
+// Helper function to determine whether a page request came from the header page or directly
+func IsFromHeader(ctx echo.Context) (bool, error) {
+	hdr := ctx.Request().Header.Get(HeaderPageIndicator)
+	// If the header is not present assume false
+	if hdr == "" {
+		return false, nil
+	}
+	fromHdr, err := strconv.ParseBool(hdr)
+	if err != nil {
+		return false, fmt.Errorf("Invalid value found in HTTP header %s - value is '%s', should be 'true' or 'false' %w",
+								 HeaderPageIndicator, hdr, err)
+	}
+	return fromHdr, nil
+}
+
+// Make sure that the page requested includes the header if called directly or just the page is called from the header
+func CreatePageFromTemplate(ctx echo.Context, pageComponent templ.Component) templ.Component {
+	// Header items created here for testing until database storage completed
+	tickerItems := []common.TickerItem {
+		{
+			StartAt: time.Now(),
+			EndAt: time.Now().Add(time.Duration(7*24)*time.Hour),
+			Category: "pennant",
+			Message: "competition resumes on Saturday, so please make sure you attend training and/or skills & drills.",
+		},
+		{
+			StartAt: time.Now(),
+			EndAt: time.Now().Add(time.Duration(7*24)*time.Hour),
+			Category: "update",
+			Message: "this week's members draw and raffle has been postponed due to forecast heat.",
+		},
+		{
+			StartAt: time.Now(),
+			EndAt: time.Now().Add(time.Duration(7*24)*time.Hour),
+			Category: "info",
+			Message: "registration for 1 bowl singles competition closes at 5pm Friday.",
+		},
+	}
+	
+	fromHeader, err := IsFromHeader(ctx)
+	if err != nil {
+		// Handle error appropriately, for now just log and continue as if not from header
+		fmt.Println(err)
+		fromHeader = false
+	}
+
+	// Now decide whether to send just the requested page component or the header as well
+	if fromHeader {
+		return pageComponent
+	}
+	return HeaderLayout(&tickerItems, pageComponent)
+}
