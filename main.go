@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
+	"runtime"
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -13,11 +15,23 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nigelpage/hbc/common"
-	"github.com/nigelpage/hbc/pages/index"
-	"github.com/nigelpage/hbc/pages/pennant"
-	"github.com/nigelpage/hbc/pages/membership"
 	"github.com/nigelpage/hbc/pages/admin"
+	"github.com/nigelpage/hbc/pages/index"
+	"github.com/nigelpage/hbc/pages/membership"
+	"github.com/nigelpage/hbc/pages/pennant"
 )
+
+func showFunctionName(method string, url string, temp interface{}) {
+	// Get the pointer value of the function
+	pc := reflect.ValueOf(temp).Pointer()
+	// Get the runtime.Func object
+	f := runtime.FuncForPC(pc)
+	fullName := f.Name()
+
+	// Optionally shorten the name
+	strs := strings.Split(fullName, ".")
+	fmt.Printf("Registered %s for url '%s' using handler '%s'\n", method, url , strs[len(strs)-1])
+}
 
 func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]common.HeaderMenu, app *echo.Echo) (*[]common.HeaderMenu, error) {
 	if (hdrMenus != nil) {
@@ -30,18 +44,25 @@ func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]common.Hea
 			switch menu.Method {
 				case http.MethodGet:
 					app.GET(url, menu.Handler)
+					showFunctionName("GET", url, menu.Handler)
 				case http.MethodPost:
 					app.POST(url, menu.Handler)
+					showFunctionName("POST", url, menu.Handler)
 				case http.MethodPut:
 					app.PUT(url, menu.Handler)
+					showFunctionName("PUT", url, menu.Handler)
 				case http.MethodDelete:
 					app.DELETE(url, menu.Handler)
+					showFunctionName("DELETE", url, menu.Handler)
 				case http.MethodPatch:
 					app.PATCH(url, menu.Handler)
+					showFunctionName("PATCH", url, menu.Handler)
 				case http.MethodHead:
 					app.HEAD(url, menu.Handler)
+					showFunctionName("HEAD", url, menu.Handler)
 				case http.MethodOptions:
 					app.OPTIONS(url, menu.Handler)
+					showFunctionName("OPTIONS", url, menu.Handler)
 				// Invalid HTTP method
 				default:
 					return nil, fmt.Errorf("Invalid HTTP method specified - %s - for url pattern - %s", menu.Method, url)

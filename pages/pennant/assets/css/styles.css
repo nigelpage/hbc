@@ -50,9 +50,6 @@ strong {
 }
 
 #pageHeader {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   display: flex;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -75,7 +72,8 @@ strong {
   font-weight: bold;
   font-size: 2rem;
   color: darkblue;
-  text-shadow: -1px -1px 0 var(--primaryBackgroundColor),
+  text-shadow:
+    -1px -1px 0 var(--primaryBackgroundColor),
     1px -1px 0 var(--primaryBackgroundColor),
     -1px 1px 0 var(--primaryBackgroundColor),
     1px 1px 0 var(--primaryBackgroundColor);

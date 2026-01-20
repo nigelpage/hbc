@@ -12,5 +12,9 @@ import (
 
 /* Main Admin page handler */
 func AdminHandler(ctx echo.Context) error {
+	if !common.IsAdminUser(ctx) {
+		return ctx.NoContent(http.StatusForbidden)
+		//return ctx.Redirect(http.StatusSeeOther, "/login")
+	}
 	return common.TemplateRenderer(ctx, http.StatusOK, ct.CreatePageFromTemplate(ctx, templates.AdminLayout()))
 }

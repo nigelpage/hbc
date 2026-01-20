@@ -2,41 +2,31 @@ package templates
 
 import (
   "strings"
-	storejson "github.com/nigelpage/hbc/common/store/json"
+	"github.com/nigelpage/hbc/common/store/json"
 )
 
-templ BaseLayout(formatMatches templ.Component, icons TemplateIcons) {
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pennant</title>
+templ PennantLayout(matchStore json.MatchStore, icons TemplateIcons) {
+  <section id="pennant">
     <script src="/static/assets/js/htmx.min.js"></script>
     <script src="/static/pennant/assets/js/functions.js"></script>
     <link rel="stylesheet" href="/static/pennant/assets/css/styles.css">
-    <link rel="icon" href="data:,">
-  </head>
-
-  <body>
-    <h1>Select competition</h1>
-    <section id="pageHeader">
+    <section id="competitionHeader">
       <div class="dropdown">
         <button class="dropbtn">Weekend Pennant</button>
         <div class="dropdown-content">
-          <a href="#">Weekend Pennant</a>
-          <a href="#">Midweek Pennant</a>
-          <a href="#">Night Pennant</a>
+          <a href="#">Weekend</a>
+          <a href="#">Midweek</a>
+          <a href="#">Night</a>
         </div>
       </div>
-
-      @LockedEdit(icons, "")
     </section>
-    <main>
-      @formatMatches
-    </main>
-  </body>
-</html>
+    <section id="competitionBody">
+      <h1>Select competition</h1>
+          for _, m := range matchStore.Matches {
+            @generateMatch(m, icons)
+          }
+    </section>
+  </section>
 }
 
 templ LockedEdit(icons TemplateIcons, msg string) {
@@ -89,7 +79,7 @@ templ UnlockedEdit(icons TemplateIcons) {
     </div>
 }
 
-templ generateMatch(m storejson.Match, icons TemplateIcons) {
+templ generateMatch(m json.Match, icons TemplateIcons) {
         <section class="match">
           <section class="competition">
           <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
@@ -127,13 +117,13 @@ templ generateMatch(m storejson.Match, icons TemplateIcons) {
 
         <section class="side">
           <section class="sideHeader">
-            if storejson.HasResults(m.Side.Teams) {
-              <article class="sideResult" { storejson.GetSideWinDrawLoss(m.Side.Teams) }>
-                <p>{ storejson.CalculateSidePointsFor(m.Side.Teams) }</p> 
+            if json.HasResults(m.Side.Teams) {
+              <article class="sideResult" { json.GetSideWinDrawLoss(m.Side.Teams) }>
+                <p>{ json.CalculateSidePointsFor(m.Side.Teams) }</p> 
                 <p>:</p>
-                <p>{ storejson.CalculateSidePointsAgainst(m.Side.Teams) }</p>
+                <p>{ json.CalculateSidePointsAgainst(m.Side.Teams) }</p>
                 <p class="sidePoints"> - </p>
-                <p class="sidePoints">{ storejson.CalculateSidePoints(m.Side.Teams) } points</p>
+                <p class="sidePoints">{ json.CalculateSidePoints(m.Side.Teams) } points</p>
               </article>
             } else {
               <article></article>
@@ -162,8 +152,8 @@ templ generateMatch(m storejson.Match, icons TemplateIcons) {
                     <p class="name">{ b.Name }</p>
                   </div>
                 }
-                if storejson.HasResults(m.Side.Teams) {
-                  <div class="result" { storejson.GetTeamWinDrawLoss(t) }>
+                if json.HasResults(m.Side.Teams) {
+                  <div class="result" { json.GetTeamWinDrawLoss(t) }>
                     <p> { t.Shots.For }</p>
                     <p>:</p>
                     <p>{ t.Shots.Against }</p>
@@ -175,10 +165,4 @@ templ generateMatch(m storejson.Match, icons TemplateIcons) {
           </section>
         </section>
       </section>
-}
-
-templ GenerateMatches(matchStore storejson.MatchStore, icons TemplateIcons) {
-    for _, m := range matchStore.Matches {
-      @generateMatch(m, icons)
-  }
 }
