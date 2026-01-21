@@ -3,12 +3,15 @@ package main
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
 	"reflect"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -132,12 +135,6 @@ func main() {
 
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
-	// Setup a handler for static files (e.g. CSS, JS etc...)
-	// app.Echo.Use(middleware.RemoveTrailingSlashWithConfig(middleware.TrailingSlashConfig{
-	// 	Skipper: func(c echo.Context) bool {
-	// 		return strings.HasPrefix(c.Path(), "/static") || strings.HasPrefix(c.Path(), "/header")
-	// 	},
-	// }))
 	app.Echo.Static("/static", "pages")
 	
 	// Register HTTP handlers and menus
@@ -160,7 +157,7 @@ func main() {
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
-	menuContainer := *header.NewHeaderMenu("", cat, "", nil)
+	menuContainer := *header.NewHeaderMenu("", cat, "", nil, nil)
 	
 	// Pennant page
 	subMenus, err := registerHeaderMenus(cat, true, pennant.GetHeaderMenus(), app.Echo)
@@ -190,5 +187,32 @@ func main() {
 	app.Echo.Use(middleware.RequestLogger())
 
 	// Start HTTP server
-	app.Echo.Logger.Fatal(app.Echo.Start(":4000"))
+
+	quit, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	s := http.Server{
+		Addr:    ":4000",
+		Handler: app.Echo,
+		//ReadTimeout: 30 * time.Second, // customize http.Server timeouts
+	}
+	go func(srv *http.Server) {
+		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			app.Echo.Logger.Fatal(err)
+		}
+		cancel() // in case server returns before ctrl+c
+	}(&s)
+
+	app.Echo.Logger.Info("Started server on :4000")
+	
+	// Wait until interrupt signal to start shutdown
+	<-quit.Done()
+
+	// start gracefully shutdown with a timeout of 10 seconds.
+	ctx, cancelGC := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelGC()
+
+	if err := s.Shutdown(ctx); err != nil {
+		app.Echo.Logger.Fatal(err)
+	}
 }

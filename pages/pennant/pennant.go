@@ -9,9 +9,10 @@ import (
 
 func GetHeaderMenus() *[]header.HeaderMenu {
 	hdrMenus := []header.HeaderMenu{
-		*header.NewHeaderMenu("/pennant/:competition", "pennant", http.MethodGet, handlers.PennantHandler),
-		*header.NewHeaderMenu("/pennant/lock", "", http.MethodGet, handlers.LockAuthenticationHandler),
-		*header.NewHeaderMenu("/pennant/authenticate", "", http.MethodPost, handlers.AuthenticationHandler),
+		*header.NewHeaderMenu("/pennant/:competition", "pennant", http.MethodGet, handlers.PennantHandler,
+							  map[string]string{"competition": "weekend"}),
+		*header.NewHeaderMenu("/pennant/lock", "", http.MethodGet, handlers.LockAuthenticationHandler, nil),
+		*header.NewHeaderMenu("/pennant/authenticate", "", http.MethodPost, handlers.AuthenticationHandler, nil	),
 	}
 	return &hdrMenus
 }

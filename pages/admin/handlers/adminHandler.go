@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/common"
-	ht "github.com/nigelpage/hbc/pages/header/templates"
 	"github.com/nigelpage/hbc/pages/admin/templates"
+	ht "github.com/nigelpage/hbc/pages/header/templates"
 )
 
 /* Main Admin page handler */

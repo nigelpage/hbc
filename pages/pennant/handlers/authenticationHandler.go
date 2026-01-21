@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/pages/pennant/templates"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -27,9 +28,9 @@ func AuthenticationHandler(ctx echo.Context) error {
 		return fmt.Errorf("Invalid password!")
 	}
 
-	return templateRenderer(ctx, http.StatusOK, templates.UnlockedEdit(templates.Icons))
+	return common.TemplateRenderer(ctx, http.StatusOK, templates.UnlockedEdit(templates.Icons))
 }
 
 func LockAuthenticationHandler(ctx echo.Context) error {
-	return templateRenderer(ctx, http.StatusOK, templates.LockedEdit(templates.Icons, ""))
+	return common.TemplateRenderer(ctx, http.StatusOK, templates.LockedEdit(templates.Icons, ""))
 }

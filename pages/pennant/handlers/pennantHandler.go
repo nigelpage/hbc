@@ -18,7 +18,7 @@ import (
 
 func getStoredMatches(comp string) js.MatchStore {
 	// Placeholder function to simulate fetching stored matches
-	pennantCompetitionStore := fmt.Sprintf("./store/json/%s20251108.json", string(comp[0]))
+	pennantCompetitionStore := fmt.Sprintf("./common/store/json/%s20251108.json", string(comp[0]))
 	jsonFile, err := os.Open(pennantCompetitionStore)
 	if err != nil {
 		fmt.Println("Error opening JSON file:", err)

@@ -3,6 +3,7 @@ package templates
 import (
   "fmt"
   "github.com/nigelpage/hbc/pages/header"
+  "github.com/nigelpage/hbc/common"
 )
 
 templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
@@ -67,14 +68,17 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
                     <div class="navbar-dropdown-content">                    
                     for _, subMenu := range menu.SubMenus {
                       if subMenu.Text != "" {
-                        <a hx-get={ fmt.Sprintf("/%s%s", menu.Text, subMenu.Url) }
-                           hx-push-url={ fmt.Sprintf("/%s%s", menu.Text, subMenu.Url) }>{ subMenu.Text }</a>
+                        <a hx-get={ fmt.Sprintf("/%s%s", menu.Text,
+                                         common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }
+                           hx-push-url={ fmt.Sprintf("/%s%s", menu.Text,
+                                         common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }>{ subMenu.Text }</a>
                       }
                     }
                     </div>
                   </div>
               } else {
-                      <a hx-get={ menu.Url } hx-push-url={ menu.Url }>{ menu.Text }</a>
+                      <a hx-get={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }
+                         hx-push-url={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }>{ menu.Text }</a>
               }
           }
         </nav>

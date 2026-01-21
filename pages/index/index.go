@@ -9,7 +9,7 @@ import (
 
 func GetHeaderMenus() *[]header.HeaderMenu {
 	hdrMenus := []header.HeaderMenu{
-		*header.NewHeaderMenu("/", "home", http.MethodGet, handlers.IndexHandler),
+		*header.NewHeaderMenu("/", "home", http.MethodGet, handlers.IndexHandler, nil),
 	}
 	return &hdrMenus
 }

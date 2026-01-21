@@ -27,12 +27,13 @@ type HeaderMenu struct {
 	Text string
 	Method string // Use values from net/http - http.MethodGet, http.MethodPost, etc...
 	Handler echo.HandlerFunc
+	DefaultParameters map[string]string
 	SubMenus []HeaderMenu
 }
 
 var HeaderMenusAndSubMenus []HeaderMenu
 
-func NewHeaderMenu(url string, text string, method string, handler echo.HandlerFunc) *HeaderMenu {
+func NewHeaderMenu(url string, text string, method string, handler echo.HandlerFunc, defaultParameters map[string]string) *HeaderMenu {
 	if text != "" {
 		text = strings.ToLower(text)
 	}
@@ -42,6 +43,7 @@ func NewHeaderMenu(url string, text string, method string, handler echo.HandlerF
 		Text: text,
 		Method: method,
 		Handler: handler,
+		DefaultParameters: defaultParameters,
 		SubMenus: []HeaderMenu{},
 	}
 	return &hdrMenu

@@ -1,18 +1,20 @@
 package handlers
 
 import (
-	"github.com/a-h/templ"
-	"github.com/labstack/echo/v4"
+	"fmt"
+	"strings"
 )
 
-/* Template renderer */
-func templateRenderer(ctx echo.Context, statusCode int, cmp templ.Component) error {
-	buf := templ.GetBuffer()
-	defer templ.ReleaseBuffer(buf)
-	
-	if err := cmp.Render(ctx.Request().Context(), buf); err != nil {
-		return err
+/* Substitute values into push URL if it contains parameters */
+func SubstitutePushUrlParams(pushUrl string, substituteValues map[string]string) string {
+	var substitutedUrl string
+	params := strings.Split(pushUrl, "/")
+	for _, param := range params {
+		if param[0] == ':' {
+			substitutedUrl = fmt.Sprintf("%s/%s", substitutedUrl, substituteValues[param[1:]])
+		} else {
+			substitutedUrl = fmt.Sprintf("%s/%s", substitutedUrl, param)
+		}
 	}
-
-	return ctx.HTML(statusCode, buf.String())
+	return substitutedUrl
 }
