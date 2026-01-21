@@ -2,23 +2,23 @@ package templates
 
 import (
   "fmt"
-  "github.com/nigelpage/hbc/common"
+  "github.com/nigelpage/hbc/pages/header"
 )
 
-templ HeaderLayout(tickerItems *[]common.TickerItem, page templ.Component) {
+templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBC</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/common/assets/img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/common/assets/img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/common/assets/img/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/common/assets/img/favicon/site.webmanifest">
-    <script src="/common/assets/js/htmx.min.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/header/assets/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/header/assets/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/header/assets/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/header/assets/img/favicon/site.webmanifest">
+    <script src="/static/header/assets/js/htmx.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/common/assets/css/styles.css">
+    <link rel="stylesheet" href="/static/header/assets/css/styles.css">
     <script>
       document.addEventListener("DOMContentLoaded", function(event) {
         document.body.addEventListener('htmx:configRequest', function(evt) {
@@ -46,7 +46,7 @@ templ HeaderLayout(tickerItems *[]common.TickerItem, page templ.Component) {
 
       <div class="header-container">
         <div class="header-item header-logo-container">
-          <img src="common/assets/img/hbc-logo.webp" alt="Heathmont Bowls Club" class="header-item header-logo"/>
+          <img src="/static/header/assets/img/hbc-logo.webp" alt="Heathmont Bowls Club" class="header-item header-logo"/>
         </div>
         <div class="header-item header-title-container">
           <h1 class="header-item header-title">Heathmont Bowls Club</h1>
@@ -58,7 +58,7 @@ templ HeaderLayout(tickerItems *[]common.TickerItem, page templ.Component) {
         </div>
 
         <nav class="navbar" hx-target="#pageBody">
-          for _, menu := range common.HeaderMenusAndSubMenus {
+          for _, menu := range header.HeaderMenusAndSubMenus {
             if len(menu.SubMenus) > 0 {
                   <div class="navbar-dropdown">
                     <button class="navbar-dropdown-button">{ menu.Text }

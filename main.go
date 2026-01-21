@@ -16,6 +16,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nigelpage/hbc/common"
 	"github.com/nigelpage/hbc/pages/admin"
+	"github.com/nigelpage/hbc/pages/header"
 	"github.com/nigelpage/hbc/pages/index"
 	"github.com/nigelpage/hbc/pages/membership"
 	"github.com/nigelpage/hbc/pages/pennant"
@@ -33,7 +34,7 @@ func showFunctionName(method string, url string, temp interface{}) {
 	fmt.Printf("Registered %s for url '%s' using handler '%s'\n", method, url , strs[len(strs)-1])
 }
 
-func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]common.HeaderMenu, app *echo.Echo) (*[]common.HeaderMenu, error) {
+func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]header.HeaderMenu, app *echo.Echo) (*[]header.HeaderMenu, error) {
 	if (hdrMenus != nil) {
 		for _, menu := range *hdrMenus {
 			url := menu.Url
@@ -128,11 +129,16 @@ func main() {
 
 	// Initialise app
 	app := common.NewApp(echo.New())
+
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	// Setup a handler for static files (e.g. CSS, JS etc...)
+	// app.Echo.Use(middleware.RemoveTrailingSlashWithConfig(middleware.TrailingSlashConfig{
+	// 	Skipper: func(c echo.Context) bool {
+	// 		return strings.HasPrefix(c.Path(), "/static") || strings.HasPrefix(c.Path(), "/header")
+	// 	},
+	// }))
 	app.Echo.Static("/static", "pages")
-	app.Echo.Static("/common", "common")
 	
 	// Register HTTP handlers and menus
 	var cat string
@@ -145,7 +151,7 @@ func main() {
 	}
 
 	// Add to the collection of all menus and handlers
-	common.HeaderMenusAndSubMenus = *menus
+	header.HeaderMenusAndSubMenus = *menus
 	
 	// ...for bowls pages
 	
@@ -154,7 +160,7 @@ func main() {
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
-	menuContainer := *common.NewHeaderMenu("", cat, "", nil)
+	menuContainer := *header.NewHeaderMenu("", cat, "", nil)
 	
 	// Pennant page
 	subMenus, err := registerHeaderMenus(cat, true, pennant.GetHeaderMenus(), app.Echo)
@@ -171,7 +177,7 @@ func main() {
 	menuContainer.SubMenus = append(menuContainer.SubMenus, *subMenus...)
 
 	// Save all the menus
-	common.HeaderMenusAndSubMenus = append(common.HeaderMenusAndSubMenus, menuContainer)
+	header.HeaderMenusAndSubMenus = append(header.HeaderMenusAndSubMenus, menuContainer)
 
 	// Admin page
 	cat = "admin"
@@ -179,8 +185,7 @@ func main() {
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
-	common.HeaderMenusAndSubMenus = append(common.HeaderMenusAndSubMenus, *menus...)
-
+	header.HeaderMenusAndSubMenus = append(header.HeaderMenusAndSubMenus, *menus...)
 	// Setup logging middleware
 	app.Echo.Use(middleware.RequestLogger())
 

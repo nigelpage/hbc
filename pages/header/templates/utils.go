@@ -8,7 +8,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 
-	"github.com/nigelpage/hbc/common"
+	"github.com/nigelpage/hbc/pages/header"
 )
 
 type TemplateIcons struct {
@@ -75,7 +75,7 @@ func IsFromHeader(ctx echo.Context) (bool, error) {
 // Make sure that the page requested includes the header if called directly or just the page is called from the header
 func CreatePageFromTemplate(ctx echo.Context, pageComponent templ.Component) templ.Component {
 	// Header items created here for testing until database storage completed
-	tickerItems := []common.TickerItem {
+	tickerItems := []header.TickerItem {
 		{
 			StartAt: time.Now(),
 			EndAt: time.Now().Add(time.Duration(7*24)*time.Hour),

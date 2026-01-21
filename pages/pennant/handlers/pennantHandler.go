@@ -10,8 +10,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	"github.com/nigelpage/hbc/common"
 	js "github.com/nigelpage/hbc/common/store/json"
-	ct "github.com/nigelpage/hbc/common/templates"
+	ht "github.com/nigelpage/hbc/pages/header/templates"
 	"github.com/nigelpage/hbc/pages/pennant/templates"
 )
 
@@ -44,5 +45,5 @@ func PennantHandler(ctx echo.Context) error {
 	}
 	store := getStoredMatches(comp)
 
-	return templateRenderer(ctx, http.StatusOK, ct.CreatePageFromTemplate(ctx, templates.PennantLayout(store, templates.Icons)))
+	return common.TemplateRenderer(ctx, http.StatusOK, ht.CreatePageFromTemplate(ctx, templates.PennantLayout(store, templates.Icons)))
 }

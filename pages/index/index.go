@@ -3,13 +3,13 @@ package index
 import (
 	"net/http"
 
-	"github.com/nigelpage/hbc/common"
+	"github.com/nigelpage/hbc/pages/header"
 	"github.com/nigelpage/hbc/pages/index/handlers"
 )
 
-func GetHeaderMenus() *[]common.HeaderMenu {
-	hdrMenus := []common.HeaderMenu{
-		*common.NewHeaderMenu("/", "home", http.MethodGet, handlers.IndexHandler),
+func GetHeaderMenus() *[]header.HeaderMenu {
+	hdrMenus := []header.HeaderMenu{
+		*header.NewHeaderMenu("/", "home", http.MethodGet, handlers.IndexHandler),
 	}
 	return &hdrMenus
 }

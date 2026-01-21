@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/common"
-	ct "github.com/nigelpage/hbc/common/templates"
+	ht "github.com/nigelpage/hbc/pages/header/templates"
 	"github.com/nigelpage/hbc/pages/admin/templates"
 )
 
@@ -16,5 +16,5 @@ func AdminHandler(ctx echo.Context) error {
 		return ctx.NoContent(http.StatusForbidden)
 		//return ctx.Redirect(http.StatusSeeOther, "/login")
 	}
-	return common.TemplateRenderer(ctx, http.StatusOK, ct.CreatePageFromTemplate(ctx, templates.AdminLayout()))
+	return common.TemplateRenderer(ctx, http.StatusOK, ht.CreatePageFromTemplate(ctx, templates.AdminLayout()))
 }
