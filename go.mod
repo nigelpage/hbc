@@ -8,7 +8,6 @@ require (
 	github.com/a-h/templ v0.3.960
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/labstack/echo/v4 v4.15.0
-	golang.org/x/crypto v0.46.0
 )
 
 require (
@@ -17,6 +16,7 @@ require (
 	github.com/tiendc/go-deepcopy v1.7.1 // indirect
 	github.com/xuri/efp v0.0.1 // indirect
 	github.com/xuri/nfp v0.0.2-0.20250530014748-2ddeb826f9a9 // indirect
+	golang.org/x/crypto v0.46.0 // indirect
 )
 
 require (

@@ -16,7 +16,7 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
     <link rel="apple-touch-icon" sizes="180x180" href="/static/header/assets/img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/header/assets/img/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/header/assets/img/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/header/assets/img/favicon/site.webmanifest">
+    <link rel="manifest" href="/static/header/assets/img/favicon/site.webmanifest">
     <script src="/static/header/assets/js/htmx.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/header/assets/css/styles.css">
@@ -58,7 +58,7 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
           </svg>
         </div>
 
-        <nav class="navbar" hx-target="#pageBody">
+        <nav class="navbar">
           for _, menu := range header.HeaderMenusAndSubMenus {
             if len(menu.SubMenus) > 0 {
                   <div class="navbar-dropdown">
@@ -70,6 +70,7 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
                       if subMenu.Text != "" {
                         <a hx-get={ fmt.Sprintf("/%s%s", menu.Text,
                                          common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }
+                           hx-target=#pageBody
                            hx-push-url={ fmt.Sprintf("/%s%s", menu.Text,
                                          common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }>{ subMenu.Text }</a>
                       }
@@ -78,6 +79,7 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
                   </div>
               } else {
                       <a hx-get={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }
+                         hx-target=#pageBody
                          hx-push-url={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }>{ menu.Text }</a>
               }
           }
@@ -87,7 +89,7 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
     </section>
 
 
-    <section class="pageBody">
+    <section id="pageBody">
       @page
     </section>
 

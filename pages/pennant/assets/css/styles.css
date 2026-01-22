@@ -3,7 +3,7 @@
 
 /* Stylesheet for pennant sides and results */
 
-:root {
+#pageBody {
   --radius: 30px;
   --shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
   --winColor: rgba(0, 128, 0, 0.45);
@@ -14,199 +14,63 @@
   --teamWidth: 250px;
 }
 
-/* * {
-  margin: 0;
-  padding: 0;
-  font-family: "Roboto", sans-serif;
-  box-sizing: border-box;
-}
-
-html {
-  min-height: 100%;
-  background: linear-gradient(
-    to bottom right,
-    dodgerblue,
-    white,
-    var(--primaryBackgroundColor)
-  );
-  background-attachment: fixed;
-}
-
-body {
-  font-family: "Roboto", sans-serif;
-  margin: 5px;
-}
-
-main {
-  color: rgb(40, 40, 40);
-}
-
-h1 {
-  display: none;
-}
-
-strong {
-  font-weight: bold;
-}
-
-#pageHeader {
-  display: flex;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  width: 100%;
-  align-items: center;
-  vertical-align: center;
-} */
-
-/* The container <div> - needed to position the dropdown content */
-.dropdown {
-  margin-right: auto;
-  margin-left: auto;
-  display: inline-block;
-  font-size: 2rem;
-}
-
-/* Dropdown Button */
-.dropbtn {
-  color: rgb(40, 40, 40);
-  font-weight: bold;
-  font-size: 2rem;
-  color: darkblue;
-  text-shadow:
-    -1px -1px 0 var(--primaryBackgroundColor),
-    1px -1px 0 var(--primaryBackgroundColor),
-    -1px 1px 0 var(--primaryBackgroundColor),
-    1px 1px 0 var(--primaryBackgroundColor);
-  background-color: rgba(255, 255, 255, 0);
-  padding: 16px;
-  border: none;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: rgb(249, 243, 163);
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  padding: 12px 16px;
-  text-decoration-line: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: rgba(247, 237, 105);
-}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.dropdown-content a:link,
-.dropdown-content a:visited,
-.dropdown-content a:hover,
-.dropdown-content a:active {
-  text-decoration: none;
-}
-
-#lockUnlockContainer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-#editContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin: 10px;
-  padding: 10px;
-  column-gap: 10px;
-}
-
-#lockedUnlockedIcon {
-  width: 1.5rem;
-  cursor: pointer;
-  anchor-name: --lockUnlockAnchor;
-}
-
-#lockUnlock {
-  all: unset;
-  display: inline-block;
-}
-
-#authenticateBackdrop {
-  background: rgb(55 55 55 / 90%);
-}
-
-#authenticate {
-  position: absolute;
-  position-anchor: --lockUnlockAnchor;
-  position-area: end span-start;
-  z-index: 1000;
-  border-color: rgb(40 40 40 / 25%);
-  border-radius: 15px;
-  box-shadow: 0 0 5px 1px rgba(40, 40, 40, 0.2);
-  padding: 10px;
-  min-width: 200px;
-  max-width: 200px;
-  min-height: 3rem;
-  background-color: rgba(211, 211, 211, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-#passwordInput {
-  width: 100%;
-}
-
-#authenticate label {
-  font-weight: lighter;
-  width: 70px;
-  margin: 5px 0 0;
-}
-
-#authenticate button {
-  min-width: 45%;
-}
-
-#authenticateMsg {
-  color: red;
-}
-
-#passwordInput {
-  margin: 5px 0px;
-}
-
-#editButtonsContainer {
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-  background-color: rgba(255, 250, 205, 0.5);
-  align-items: center;
+.competition-header-container {
   display: grid;
-  grid-template-columns: 3fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  padding: 10px;
+  width: 100%;
+  height: auto;
+  grid-template-rows: 1fr;
+  grid-template-columns: 8rem auto 8rem;
   gap: 10px;
+  overflow: hidden;
 }
 
-.editButtons {
-  background: transparent;
-  border: none;
+.competition-header {
+  grid-column: 2 / 2;
+  grid-row: 1 / 1;
   display: flex;
+  flex: 1;
+  float: left;
   align-items: center;
-  justify-content: left;
-  cursor: pointer;
+  height: auto;
+  background-color: #bcb904;
+  color: rgb(53, 53, 53);
 }
 
-.editButtons svg {
-  height: 1.5rem;
-  width: 1.5rem;
+.competition-header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: lowercase;
+  margin: 5px;
+  float: left;
+}
+
+.competition-type {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: lowercase;
+  margin: auto;
+  float: left;
+}
+
+.competition-type {
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: none;
+  margin-left: 10px;
+  float: left;
+}
+
+.competition {
+  display: flex;
+  flex-direction: row;
+  font-size: 1.5rem;
+  font-weight: bold;
+  justify-content: center;
+  text-transform: uppercase;
+  margin: 1rem;
 }
 
 .match {
@@ -214,16 +78,6 @@ strong {
   border-radius: var(--radius);
   padding: 5px;
   margin: 10px;
-}
-
-.competition {
-  color: rgb(40, 40, 40);
-  font-size: 1.3rem;
-  text-transform: uppercase;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: 1rem;
 }
 
 .verticalRule {

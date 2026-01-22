@@ -35,7 +35,7 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>HBC</title><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/static/header/assets/img/favicon/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/static/header/assets/img/favicon/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/static/header/assets/img/favicon/favicon-16x16.png\"><link rel=\"manifest\" href=\"/header/assets/img/favicon/site.webmanifest\"><script src=\"/static/header/assets/js/htmx.min.js\"></script><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\"><link rel=\"stylesheet\" href=\"/static/header/assets/css/styles.css\"><script>\n      document.addEventListener(\"DOMContentLoaded\", function(event) {\n        document.body.addEventListener('htmx:configRequest', function(evt) {\n          // Add a custom header to all htmx requests\n            evt.detail.headers['")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>HBC</title><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/static/header/assets/img/favicon/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/static/header/assets/img/favicon/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/static/header/assets/img/favicon/favicon-16x16.png\"><link rel=\"manifest\" href=\"/static/header/assets/img/favicon/site.webmanifest\"><script src=\"/static/header/assets/js/htmx.min.js\"></script><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\"><link rel=\"stylesheet\" href=\"/static/header/assets/css/styles.css\"><script>\n      document.addEventListener(\"DOMContentLoaded\", function(event) {\n        document.body.addEventListener('htmx:configRequest', function(evt) {\n          // Add a custom header to all htmx requests\n            evt.detail.headers['")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -93,7 +93,7 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"header-container\"><div class=\"header-item header-logo-container\"><img src=\"/static/header/assets/img/hbc-logo.webp\" alt=\"Heathmont Bowls Club\" class=\"header-item header-logo\"></div><div class=\"header-item header-title-container\"><h1 class=\"header-item header-title\">Heathmont Bowls Club</h1></div><div class=\"header-item header-login-container\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" class=\"header-item header-login\"><path d=\"M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z\"></path></svg></div><nav class=\"navbar\" hx-target=\"#pageBody\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"header-container\"><div class=\"header-item header-logo-container\"><img src=\"/static/header/assets/img/hbc-logo.webp\" alt=\"Heathmont Bowls Club\" class=\"header-item header-logo\"></div><div class=\"header-item header-title-container\"><h1 class=\"header-item header-title\">Heathmont Bowls Club</h1></div><div class=\"header-item header-login-container\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" class=\"header-item header-login\"><path d=\"M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z\"></path></svg></div><nav class=\"navbar\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -132,7 +132,7 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" hx-push-url=\"")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" hx-target=\"#pageBody\" hx-push-url=\"")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -140,7 +140,7 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 						templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/%s%s", menu.Text,
 							common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 74, Col: 112}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 75, Col: 112}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 						if templ_7745c5c3_Err != nil {
@@ -153,7 +153,7 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 						var templ_7745c5c3_Var8 string
 						templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(subMenu.Text)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 74, Col: 129}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 75, Col: 129}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 						if templ_7745c5c3_Err != nil {
@@ -177,20 +177,20 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 80, Col: 98}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 81, Col: 98}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\" hx-push-url=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\" hx-target=\"#pageBody\" hx-push-url=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var10 string
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 81, Col: 103}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 83, Col: 103}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -203,7 +203,7 @@ func HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) templ.
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(menu.Text)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 81, Col: 117}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/header/templates/header.templ`, Line: 83, Col: 117}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {

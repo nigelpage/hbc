@@ -7,161 +7,109 @@ import (
 
 templ PennantLayout(matchStore json.MatchStore, icons TemplateIcons) {
   <section id="pennant">
-    <script src="/static/pennant/assets/js/functions.js"></script>
     <link rel="stylesheet" href="/static/pennant/assets/css/styles.css">
-    <section id="competitionHeader">
-      <div class="dropdown">
-        <button class="dropbtn">Weekend Pennant</button>
-        <div class="dropdown-content">
-          <a href="#">Weekend</a>
-          <a href="#">Midweek</a>
-          <a href="#">Night</a>
-        </div>
+    <section class="competition-header-container">
+      <div class="competition-header">
+        <h1>pennant</h1>        
+        <select name="competitionType" class="competition-type">
+          <option value="weekend">weekend</option>
+          <option value="midweek">midweek</option>
+          <option value="night">night</option>
+        </select>        
       </div>
     </section>
     <section id="competitionBody">
-      <h1>Select competition</h1>
-          for _, m := range matchStore.Matches {
-            @generateMatch(m, icons)
-          }
+      for _, m := range matchStore.Matches {
+        @generateMatch(m, icons)
+      }
     </section>
   </section>
 }
 
-templ LockedEdit(icons TemplateIcons, msg string) {
-    <div id="lockUnlockContainer">
-      <div id="editContainer">
-        <button id="lockUnlock" class="editButtons" onclick="showLogin()">
-          @templ.Raw(icons.LockedIcon)
-        </button>
-      </div>
-      <div id="authenticateBackdrop">
-        <dialog id="authenticate">
-          <form hx-post="/authenticate" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
-            <input type="username" hidden name="username" autocomplete="username"/>
-            <label>Password
-              <input type="password" id="passwordInput" name="password" autocomplete="current-password"/>
-            </label>
-            <div id="authenticateOkCancel">
-              <button type="submit" id="passwordAccept">OK</button>                
-              <button id="passwordCancel" onclick="hideLogin()">Cancel</button>
-            </div>
-            if msg != "" {
-              <p id="authenticateMsg">msg</p>
-            }
-          </form>
-        </dialog>
-      </div>
-    </div>
-}
-
-templ UnlockedEdit(icons TemplateIcons) {
-    <div id="lockUnlockContainer">
-      <div id="editContainer">
-        <div id="editButtonsContainer">
-          <button class="editButtons">
-            @templ.Raw(icons.AddIcon)
-            <span>Week</span>
-          </button>
-          <button class="editButtons" hx-get="/lock" hx-target="#lockUnlockContainer" hx-swap="outerHTML">
-            @templ.Raw(icons.UnlockedIcon)
-          </button>
-          <button class="editButtons">
-            @templ.Raw(icons.AddIcon)
-            <span>Side</span>
-          </button>
-          <button class="editButtons">
-            @templ.Raw(icons.HealthcheckIcon)
-          </button>
-        </div>
-      </div>
-    </div>
-}
-
 templ generateMatch(m json.Match, icons TemplateIcons) {
-        <section class="match">
-          <section class="competition">
-          <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
-          <div class="verticalRule"></div>
-          <p>Round { m.Round.Number }</p>
-          <div class="verticalRule"></div>
-          <p>
-            <time datetime="{ m.Round.PlayedAt }">{ formatTime(m.Round.PlayedAt, false) }</time>
-          </p>
-        </section>
+    <section class="match">
+      <section class="competition">
+      <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
+      <div class="verticalRule"></div>
+      <p>Round { m.Round.Number }</p>
+      <div class="verticalRule"></div>
+      <p>
+        <time datetime="{ m.Round.PlayedAt }">{ formatTime(m.Round.PlayedAt, false) }</time>
+      </p>
+    </section>
 
-        <section class="round">
-          <p><strong>VS: </strong>{ m.Round.Opponent }</p>
-          <p class="alignedItems">
-            if strings.EqualFold(m.Round.Venue, "Heathmont") { 
-              @templ.Raw(icons.HomeIcon)
-            } else {
-              @templ.Raw(icons.AwayIcon)
-            }
-            <span class="alignedText">
-              { m.Round.Venue }
-            </span>
-          </p>
-          <p>
-            <strong>Duty Selector: </strong>{ m.DutySelector.Name }<span>
-              @templ.Raw(icons.PhoneIcon)
-              <a { formatPhoneNumberURI(m.DutySelector.Phone) }>{ m.DutySelector.Phone }</a>
-            </span>
-          </p>
-          <p>
-            <strong>Updated:</strong>
-            <time datetime="{ m.Side.Updated }">{ formatTime(m.Side.Updated, true) }</time>
-          </p>
-        </section>
+    <section class="round">
+      <p><strong>VS: </strong>{ m.Round.Opponent }</p>
+      <p class="alignedItems">
+        if strings.EqualFold(m.Round.Venue, "Heathmont") { 
+          @templ.Raw(icons.HomeIcon)
+        } else {
+          @templ.Raw(icons.AwayIcon)
+        }
+        <span class="alignedText">
+          { m.Round.Venue }
+        </span>
+      </p>
+      <p>
+        <strong>Duty Selector: </strong>{ m.DutySelector.Name }<span>
+          @templ.Raw(icons.PhoneIcon)
+          <a { formatPhoneNumberURI(m.DutySelector.Phone) }>{ m.DutySelector.Phone }</a>
+        </span>
+      </p>
+      <p>
+        <strong>Updated:</strong>
+        <time datetime="{ m.Side.Updated }">{ formatTime(m.Side.Updated, true) }</time>
+      </p>
+    </section>
 
-        <section class="side">
-          <section class="sideHeader">
-            if json.HasResults(m.Side.Teams) {
-              <article class="sideResult" { json.GetSideWinDrawLoss(m.Side.Teams) }>
-                <p>{ json.CalculateSidePointsFor(m.Side.Teams) }</p> 
-                <p>:</p>
-                <p>{ json.CalculateSidePointsAgainst(m.Side.Teams) }</p>
-                <p class="sidePoints"> - </p>
-                <p class="sidePoints">{ json.CalculateSidePoints(m.Side.Teams) } points</p>
-              </article>
-            } else {
-              <article></article>
-            }
-            <article class="sideName">{ m.Side.Name }</article>
+    <section class="side">
+      <section class="sideHeader">
+        if json.HasResults(m.Side.Teams) {
+          <article class="sideResult" { json.GetSideWinDrawLoss(m.Side.Teams) }>
+            <p>{ json.CalculateSidePointsFor(m.Side.Teams) }</p> 
+            <p>:</p>
+            <p>{ json.CalculateSidePointsAgainst(m.Side.Teams) }</p>
+            <p class="sidePoints"> - </p>
+            <p class="sidePoints">{ json.CalculateSidePoints(m.Side.Teams) } points</p>
+          </article>
+        } else {
+          <article></article>
+        }
+        <article class="sideName">{ m.Side.Name }</article>
 
-            <article class="sideHeaderTile">
-              <p class="sideHeaderTileTitle">{ m.Round.PlayedOn.Title }</p>
-              <p class="sideHeaderTileDetails">{ m.Round.PlayedOn.Details }</p>
-            </article>
+        <article class="sideHeaderTile">
+          <p class="sideHeaderTileTitle">{ m.Round.PlayedOn.Title }</p>
+          <p class="sideHeaderTileDetails">{ m.Round.PlayedOn.Details }</p>
+        </article>
 
-            <article class="sideHeaderTile">
-              <p class="sideHeaderTileTitle">Side Manager</p>
-              <p class="sideHeaderTileDetails">{ m.Side.Manager }</p>
-            </article>
-          </section>
-
-          <section class="teams">
-            for _, t := range m.Side.Teams {
-            <article class="team">
-              <p class="duty">{ t.Duty }</p>
-                for _, b := range t.Bowlers {
-                  <div class="bowler">
-                    <p class="position">{ b.Position }</p>
-                    <p class="role">{ b.Role }</p>
-                    <p class="name">{ b.Name }</p>
-                  </div>
-                }
-                if json.HasResults(m.Side.Teams) {
-                  <div class="result" { json.GetTeamWinDrawLoss(t) }>
-                    <p> { t.Shots.For }</p>
-                    <p>:</p>
-                    <p>{ t.Shots.Against }</p>
-                  </div>
-                }
-
-              </article>
-           }
-          </section>
-        </section>
+        <article class="sideHeaderTile">
+          <p class="sideHeaderTileTitle">Side Manager</p>
+          <p class="sideHeaderTileDetails">{ m.Side.Manager }</p>
+        </article>
       </section>
+
+      <section class="teams">
+        for _, t := range m.Side.Teams {
+        <article class="team">
+          <p class="duty">{ t.Duty }</p>
+            for _, b := range t.Bowlers {
+              <div class="bowler">
+                <p class="position">{ b.Position }</p>
+                <p class="role">{ b.Role }</p>
+                <p class="name">{ b.Name }</p>
+              </div>
+            }
+            if json.HasResults(m.Side.Teams) {
+              <div class="result" { json.GetTeamWinDrawLoss(t) }>
+                <p> { t.Shots.For }</p>
+                <p>:</p>
+                <p>{ t.Shots.Against }</p>
+              </div>
+            }
+
+          </article>
+        }
+      </section>
+    </section>
+  </section>
 }

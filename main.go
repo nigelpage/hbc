@@ -3,15 +3,12 @@ package main
 import (
 	"bufio"
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
-	"os/signal"
 	"reflect"
 	"runtime"
 	"strings"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -136,6 +133,7 @@ func main() {
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	app.Echo.Static("/static", "pages")
+	app.Echo.Static("/.well-known", ".well-known")
 	
 	// Register HTTP handlers and menus
 	var cat string
@@ -188,31 +186,5 @@ func main() {
 
 	// Start HTTP server
 
-	quit, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer cancel()
-
-	s := http.Server{
-		Addr:    ":4000",
-		Handler: app.Echo,
-		//ReadTimeout: 30 * time.Second, // customize http.Server timeouts
-	}
-	go func(srv *http.Server) {
-		if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-			app.Echo.Logger.Fatal(err)
-		}
-		cancel() // in case server returns before ctrl+c
-	}(&s)
-
-	app.Echo.Logger.Info("Started server on :4000")
-	
-	// Wait until interrupt signal to start shutdown
-	<-quit.Done()
-
-	// start gracefully shutdown with a timeout of 10 seconds.
-	ctx, cancelGC := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancelGC()
-
-	if err := s.Shutdown(ctx); err != nil {
-		app.Echo.Logger.Fatal(err)
-	}
+	app.Start(":4000")
 }
