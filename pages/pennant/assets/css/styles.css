@@ -12,6 +12,7 @@
   --primaryBackgroundColor: rgb(247, 237, 105);
   --gridGap: 1rem;
   --teamWidth: 250px;
+  --headerBarBackgroundColor: #bcb904;
 }
 
 .competition-header-container {
@@ -32,7 +33,7 @@
   float: left;
   align-items: center;
   height: auto;
-  background-color: #bcb904;
+  background-color: var(--headerBarBackgroundColor);
   color: rgb(53, 53, 53);
 }
 
@@ -48,19 +49,22 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 1rem;
-  font-weight: normal;
+  font-size: 1.2rem;
+  font-weight: bold;
   text-transform: lowercase;
-  margin: auto;
-  float: left;
+  margin: 5px 10px;
+  width: 140px;
+  padding: 7px;
+  border: none;
+  background-color: var(--headerBarBackgroundColor);
+  color: rgb(53, 53, 53);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
 }
 
-.competition-type {
-  font-size: 1rem;
-  font-weight: normal;
-  text-transform: none;
-  margin-left: 10px;
-  float: left;
+.competition-type:focus {
+  appearance: none;
+  outline: none;
 }
 
 .competition {
