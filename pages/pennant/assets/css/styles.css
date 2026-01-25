@@ -46,6 +46,10 @@
 }
 
 .competition-type {
+  position: relative;
+  -webkit-appearance: none; /* Chrome, Safari, Edge, Opera */
+  -moz-appearance: none; /* Firefox */
+  appearance: none;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -60,6 +64,15 @@
   color: rgb(53, 53, 53);
   box-shadow: var(--shadow);
   border-radius: var(--radius);
+}
+
+.competition-type::after {
+  content: url('data:image/svg+xml,<svg class="ionicon" viewBox="0 0 512 512"><path d="M64 144l192 224 192-224H64z"/></svg>');
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%); /* Vertically center the arrow */
+  pointer-events: none; /* Allows clicks to pass through to the select element */
 }
 
 .competition-type:focus {
