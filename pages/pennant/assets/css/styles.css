@@ -13,6 +13,7 @@
   --gridGap: 1rem;
   --teamWidth: 250px;
   --headerBarBackgroundColor: #bcb904;
+  --headerBarColor: rgb(53, 53, 53);
 }
 
 .competition-header-container {
@@ -34,7 +35,7 @@
   align-items: center;
   height: auto;
   background-color: var(--headerBarBackgroundColor);
-  color: rgb(53, 53, 53);
+  color: var(--headerBarColor);
 }
 
 .competition-header h1 {
@@ -47,9 +48,6 @@
 
 .competition-type {
   position: relative;
-  -webkit-appearance: none; /* Chrome, Safari, Edge, Opera */
-  -moz-appearance: none; /* Firefox */
-  appearance: none;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -57,27 +55,38 @@
   font-weight: bold;
   text-transform: lowercase;
   margin: 5px 10px;
-  width: 140px;
+  width: 120px;
   padding: 7px;
   border: none;
   background-color: var(--headerBarBackgroundColor);
-  color: rgb(53, 53, 53);
+  color: var(--headerBarColor);
   box-shadow: var(--shadow);
   border-radius: var(--radius);
 }
 
-.competition-type::after {
-  content: url('data:image/svg+xml,<svg class="ionicon" viewBox="0 0 512 512"><path d="M64 144l192 224 192-224H64z"/></svg>');
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%); /* Vertically center the arrow */
-  pointer-events: none; /* Allows clicks to pass through to the select element */
+.competition-header .competition-header-item {
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-transform: lowercase;
+  margin: 5px 10px;
 }
 
 .competition-type:focus {
-  appearance: none;
   outline: none;
+  box-shadow: var(--shadow);
+}
+
+.week-calendar {
+  position: relative;
+  margin: 5px 10px;
+  padding: 7px;
+  width: 500px;
+  border: none;
+  outline: none;
+  background-color: var(--headerBarBackgroundColor);
+  color: var(--headerBarColor);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
 }
 
 .competition {
@@ -203,7 +212,9 @@ a:active {
 }
 
 .side {
-  display: grid;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
   gap: var(--gridGap);
   margin-bottom: 1.25rem;
   justify-content: center;
@@ -222,7 +233,7 @@ a:active {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: stretch;
+  /* align-items: stretch; */
   justify-content: center;
   gap: 15px;
 }
@@ -316,7 +327,7 @@ a:active {
 .team {
   min-width: var(--teamWidth);
   max-width: var(--teamWidth);
-  padding: 10px;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -337,8 +348,8 @@ a:active {
 }
 
 .bowler {
-  min-width: var(--bowlerWidth);
-  max-width: var(--bowlerWidth);
+  /* min-width: var(--bowlerWidth);
+  max-width: var(--bowlerWidth); */
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: auto;

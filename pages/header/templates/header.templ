@@ -17,9 +17,10 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
     <link rel="icon" type="image/png" sizes="32x32" href="/static/header/assets/img/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/header/assets/img/favicon/favicon-16x16.png">
     <link rel="manifest" href="/static/header/assets/img/favicon/site.webmanifest">
-    <script src="/static/header/assets/js/htmx.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/header/assets/css/styles.css">
+    <script src="/static/header/assets/js/header.js"></script>
+    <script src="/static/header/assets/js/htmx.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function(event) {
         document.body.addEventListener('htmx:configRequest', function(evt) {
@@ -27,6 +28,7 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
             evt.detail.headers['{{ HeaderPageIndicator }}'] = 'true';
         });
       });
+      console.log('Header added to every HTMX call...');
     </script>
   </head>
 
@@ -70,17 +72,21 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
                       if subMenu.Text != "" {
                         <a hx-get={ fmt.Sprintf("/%s%s", menu.Text,
                                          common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }
-                           hx-target=#pageBody
+                           hx-target=#pageBody hx-swap="innerHTML"
                            hx-push-url={ fmt.Sprintf("/%s%s", menu.Text,
-                                         common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }>{ subMenu.Text }</a>
+                                         common.SubstitutePushUrlParams(subMenu.Url, subMenu.DefaultParameters)) }>
+                            { subMenu.Text }
+                        </a>
                       }
                     }
                     </div>
                   </div>
               } else {
                       <a hx-get={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }
-                         hx-target=#pageBody
-                         hx-push-url={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }>{ menu.Text }</a>
+                         hx-target=#pageBody hx-swap="innerHTML"
+                         hx-push-url={ common.SubstitutePushUrlParams(menu.Url, menu.DefaultParameters) }>
+                          { menu.Text }
+                      </a>
               }
           }
         </nav>
@@ -89,8 +95,15 @@ templ HeaderLayout(tickerItems *[]header.TickerItem, page templ.Component) {
     </section>
 
 
-    <section id="pageBody">
+    <section id="pageBody"
+      hx-on::after-settle={ templ.JSFuncCall("initPage", templ.JSExpression("this.firstElementChild.id"),
+                                                         templ.JSExpression("event")) }>
       @page
+      <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+          initPage(document.getElementById("pageBody").firstElementChild.id, event);
+        })
+      </script>
     </section>
 
   </body>

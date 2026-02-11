@@ -7,15 +7,24 @@ import (
 
 templ PennantLayout(matchStore json.MatchStore, icons TemplateIcons) {
   <section id="pennant">
+    <script type="module" src="/static/pennant/assets/js/functions.mjs"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/weekSelect.min.js"></script>
     <link rel="stylesheet" href="/static/pennant/assets/css/styles.css">
     <section class="competition-header-container">
-      <div class="competition-header">
+      <div class="competition-header" id="contains-flatpickr">
         <h1>pennant</h1>        
-        <select name="competitionType" class="competition-type">
+        <select id="competition-selector" name="competitionType" class="competition-type">
           <option value="weekend">weekend</option>
           <option value="midweek">midweek</option>
           <option value="night">night</option>
-        </select>        
+        </select>
+        <span class="competition-header-item">week ending</span>
+        <div class="flatpickr" id="week-calendar">
+          <input type="text" id="week-ending" data-input>
+        </div>    
       </div>
     </section>
     <section id="competitionBody">
@@ -27,8 +36,8 @@ templ PennantLayout(matchStore json.MatchStore, icons TemplateIcons) {
 }
 
 templ generateMatch(m json.Match, icons TemplateIcons) {
-    <section class="match">
-      <section class="competition">
+  <section class="match">
+    <section class="competition">
       <a { formatBowlslinkURI(m.Competition.BowlslinkID) } target="_blank">{ m.Competition.Name }</a>
       <div class="verticalRule"></div>
       <p>Round { m.Round.Number }</p>
@@ -87,6 +96,7 @@ templ generateMatch(m json.Match, icons TemplateIcons) {
           <p class="sideHeaderTileDetails">{ m.Side.Manager }</p>
         </article>
       </section>
+    </section>
 
       <section class="teams">
         for _, t := range m.Side.Teams {
@@ -110,6 +120,6 @@ templ generateMatch(m json.Match, icons TemplateIcons) {
           </article>
         }
       </section>
-    </section>
+    
   </section>
 }

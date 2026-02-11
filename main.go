@@ -133,7 +133,7 @@ func main() {
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	app.Echo.Static("/static", "pages")
-	app.Echo.Static("/.well-known", ".well-known")
+	//app.Echo.Static("/.well-known", ".well-known")
 	
 	// Register HTTP handlers and menus
 	var cat string
