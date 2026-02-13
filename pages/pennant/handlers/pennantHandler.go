@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/common"
+	se "github.com/nigelpage/hbc/common/store/errors"
 	js "github.com/nigelpage/hbc/common/store/json"
 	ht "github.com/nigelpage/hbc/pages/header/templates"
 	"github.com/nigelpage/hbc/pages/pennant/templates"
@@ -22,8 +23,7 @@ func getStoredMatches(comp string, we time.Time) (js.MatchStore, error) {
 	pennantCompetitionStore := fmt.Sprintf("./common/store/json/%s%s.json", string(comp[0]), we.Format("20060102"))
 	jsonFile, err := os.Open(pennantCompetitionStore)
 	if err != nil {
-		return js.MatchStore{},
-			   fmt.Errorf("No data found for %s competition, week ending %s: %w", comp, we.Format("02-Jan-2006"), err)
+		return js.MatchStore{}, se.ErrNotFound
 	}
 	defer jsonFile.Close()
 
@@ -63,7 +63,11 @@ func PennantHandler(ctx echo.Context) error {
 
 	store, err := getStoredMatches(comp, we)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		if err == se.ErrNotFound {
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		} else {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
 	}
 
 	return common.TemplateRenderer(ctx, http.StatusOK, ht.CreatePageFromTemplate(ctx, templates.PennantLayout(store, templates.Icons)))
