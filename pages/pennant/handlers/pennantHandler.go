@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/nigelpage/hbc/common"
-	se "github.com/nigelpage/hbc/common/store/errors"
+	se "github.com/nigelpage/hbc/common/store"
 	js "github.com/nigelpage/hbc/common/store/json"
 	ht "github.com/nigelpage/hbc/pages/header/templates"
 	"github.com/nigelpage/hbc/pages/pennant/templates"
