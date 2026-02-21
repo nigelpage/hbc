@@ -36,7 +36,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/xuri/excelize/v2 v2.10.0
-	golang.org/x/mod v0.30.0 // indirect
+	golang.org/x/mod v0.30.0
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect

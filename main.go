@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"reflect"
-	"runtime"
+	// "reflect"
+	// "runtime"
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -22,17 +22,17 @@ import (
 	"github.com/nigelpage/hbc/pages/pennant"
 )
 
-func showFunctionName(method string, url string, temp interface{}) {
-	// Get the pointer value of the function
-	pc := reflect.ValueOf(temp).Pointer()
-	// Get the runtime.Func object
-	f := runtime.FuncForPC(pc)
-	fullName := f.Name()
+// func showFunctionName(method string, url string, temp interface{}) {
+// 	// Get the pointer value of the function
+// 	pc := reflect.ValueOf(temp).Pointer()
+// 	// Get the runtime.Func object
+// 	f := runtime.FuncForPC(pc)
+// 	fullName := f.Name()
 
-	// Optionally shorten the name
-	strs := strings.Split(fullName, ".")
-	fmt.Printf("Registered %s for url '%s' using handler '%s'\n", method, url , strs[len(strs)-1])
-}
+// 	// Optionally shorten the name
+// 	strs := strings.Split(fullName, ".")
+// 	fmt.Printf("Registered %s for url '%s' using handler '%s'\n", method, url , strs[len(strs)-1])
+// }
 
 func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]header.HeaderMenu, app *echo.Echo) (*[]header.HeaderMenu, error) {
 	if (hdrMenus != nil) {
@@ -45,25 +45,25 @@ func registerHeaderMenus(category string, isSubMenu bool, hdrMenus *[]header.Hea
 			switch menu.Method {
 				case http.MethodGet:
 					app.GET(url, menu.Handler)
-					showFunctionName("GET", url, menu.Handler)
+					// showFunctionName("GET", url, menu.Handler)
 				case http.MethodPost:
 					app.POST(url, menu.Handler)
-					showFunctionName("POST", url, menu.Handler)
+					// showFunctionName("POST", url, menu.Handler)
 				case http.MethodPut:
 					app.PUT(url, menu.Handler)
-					showFunctionName("PUT", url, menu.Handler)
+					// showFunctionName("PUT", url, menu.Handler)
 				case http.MethodDelete:
 					app.DELETE(url, menu.Handler)
-					showFunctionName("DELETE", url, menu.Handler)
+					// showFunctionName("DELETE", url, menu.Handler)
 				case http.MethodPatch:
 					app.PATCH(url, menu.Handler)
-					showFunctionName("PATCH", url, menu.Handler)
+					// showFunctionName("PATCH", url, menu.Handler)
 				case http.MethodHead:
 					app.HEAD(url, menu.Handler)
-					showFunctionName("HEAD", url, menu.Handler)
+					// showFunctionName("HEAD", url, menu.Handler)
 				case http.MethodOptions:
 					app.OPTIONS(url, menu.Handler)
-					showFunctionName("OPTIONS", url, menu.Handler)
+					// showFunctionName("OPTIONS", url, menu.Handler)
 				// Invalid HTTP method
 				default:
 					return nil, fmt.Errorf("Invalid HTTP method specified - %s - for url pattern - %s", menu.Method, url)
@@ -133,14 +133,22 @@ func main() {
 	app.Echo.Pre(middleware.RemoveTrailingSlash())
 	
 	app.Echo.Static("/static", "pages")
-	//app.Echo.Static("/.well-known", ".well-known")
-	
+
 	// Register HTTP handlers and menus
+	// Create all the pages
+
+	var allPages map[string]*common.PageDetails = make(map[string]*common.PageDetails)
 	var cat string
 
 	// ...for index page
+	indexPage, err := index.NewIndexPage(dbPool)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)
+	}
+	allPages[indexPage.Title] = indexPage
+	
 	cat = "home"
-	menus, err := registerHeaderMenus(cat, false, index.GetHeaderMenus(), app.Echo)
+	menus, err := registerHeaderMenus(cat, false, indexPage.HeaderMenus(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
@@ -158,14 +166,26 @@ func main() {
 	menuContainer := *header.NewHeaderMenu("", cat, "", nil, nil)
 	
 	// Pennant page
-	subMenus, err := registerHeaderMenus(cat, true, pennant.GetHeaderMenus(), app.Echo)
+	pennantPage, err := pennant.NewPennantPage(dbPool)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)
+	}
+	allPages[pennantPage.Title] = pennantPage
+	
+	subMenus, err := registerHeaderMenus(cat, true, pennantPage.HeaderMenus(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
 	menuContainer.SubMenus = append(menuContainer.SubMenus, *subMenus...)
 
 	// Membership page
-	subMenus, err = registerHeaderMenus(cat, true, membership.GetHeaderMenus(), app.Echo)
+	membershipPage, err := membership.NewMembershipPage(dbPool)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
+	allPages[membershipPage.Title] = membershipPage
+	
+	subMenus, err = registerHeaderMenus(cat, true, membershipPage.HeaderMenus(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
@@ -176,13 +196,26 @@ func main() {
 
 	// Admin page
 	cat = "admin"
-	menus, err = registerHeaderMenus(cat, false, admin.GetHeaderMenus(), app.Echo)
+	adminPage, err := admin.NewAdminPage(dbPool)
+	if err != nil {
+		app.Echo.Logger.Fatal(err)	
+	}
+	allPages[adminPage.Title] = adminPage
+
+	menus, err = registerHeaderMenus(cat, false, adminPage.HeaderMenus(), app.Echo)
 	if err != nil {
 		app.Echo.Logger.Fatal(err)	
 	}
 	header.HeaderMenusAndSubMenus = append(header.HeaderMenusAndSubMenus, *menus...)
+
 	// Setup logging middleware
 	app.Echo.Use(middleware.RequestLogger())
+
+	// Registered pages
+
+	for _, page := range allPages {
+		fmt.Printf("Created and registered page Title: '%s', Version: '%s', Description: '%s'\n", page.Title, page.Version, page.Description)
+	}
 
 	// Start HTTP server
 
