@@ -89,9 +89,15 @@
   border-radius: var(--radius);
 }
 
+.matchFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .competition {
   display: flex;
-  flex-direction: row;
   font-size: 1.5rem;
   font-weight: bold;
   justify-content: center;
@@ -100,6 +106,12 @@
 }
 
 .match {
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   box-shadow: var(--shadow);
   border-radius: var(--radius);
   padding: 5px;
@@ -214,9 +226,9 @@ a:active {
 .side {
   display: flex;
   flex-direction: row;
-  min-width: 0;
+  flex-wrap: wrap;
+  width: fit-content;
   gap: var(--gridGap);
-  margin-bottom: 1.25rem;
   justify-content: center;
   text-align: center;
   background-color: rgba(211, 211, 211, 0.5);
@@ -226,16 +238,17 @@ a:active {
   box-shadow: var(--shadow);
   border-radius: var(--radius);
   padding: 10px;
-  margin: 10px;
+  margin: 10px 0px;
 }
 
 .sideHeader {
   display: flex;
+  flex: 0 1 auto;
   flex-direction: row;
   flex-wrap: wrap;
-  /* align-items: stretch; */
+  align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
 }
 
 .sideResult {
@@ -243,7 +256,6 @@ a:active {
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
-  align-content: space-around;
   gap: 15px;
   min-width: var(--teamWidth);
   max-width: var(--teamWidth);
@@ -348,8 +360,6 @@ a:active {
 }
 
 .bowler {
-  /* min-width: var(--bowlerWidth);
-  max-width: var(--bowlerWidth); */
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: auto;
@@ -404,4 +414,16 @@ a:active {
 
 .result[data-teamResult="draw"] {
   background-color: var(--drawColor);
+}
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  color: red;
+  font-size: 1.5rem;
+  font-weight: bold;
 }

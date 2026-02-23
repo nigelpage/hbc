@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -62,12 +63,8 @@ func PennantHandler(ctx echo.Context) error {
 	}
 
 	store, err := getStoredMatches(comp, we)
-	if err != nil {
-		if err == se.ErrNotFound {
-			return echo.NewHTTPError(http.StatusNotFound, err.Error())
-		} else {
+	if err != nil && !errors.Is(err, se.ErrNotFound) {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
 	}
 
 	return common.TemplateRenderer(ctx, http.StatusOK, ht.CreatePageFromTemplate(ctx, templates.PennantLayout(store, templates.Icons)))
